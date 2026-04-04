@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pro Ventas Magic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="/chart.js"></script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#3b5bdb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ProVentas">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+</head>
+<body>
+  <div class="app">
+
+    <!-- SIDEBAR desktop -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon"><i class="fa-solid fa-grip"></i></div>
+          <div class="logo-text">
+            <div class="logo-sub">Bienvenido de nuevo,</div>
+            <div class="logo-title">Pro Ventas Magic</div>
+          </div>
+        </div>
+        <div class="sidebar-actions">
+          <button class="icon-btn" id="themeToggle"><i class="fa-solid fa-moon"></i></button>
+          <button class="icon-btn"><i class="fa-solid fa-bell"></i></button>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-label">REGISTRO</div>
+          <a href="#" class="nav-item" data-page="nuevo-pedido"><i class="fa-solid fa-file-circle-plus"></i> Nuevo Pedido</a>
+          <a href="#" class="nav-item" data-page="pedidos"><i class="fa-solid fa-bag-shopping"></i> Pedidos</a>
+          <a href="#" class="nav-item" data-page="clientes"><i class="fa-solid fa-users"></i> Clientes</a>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">MÓDULOS</div>
+          <a href="#" class="nav-item active" data-page="inicio"><i class="fa-solid fa-house"></i> Inicio</a>
+          <a href="#" class="nav-item" data-page="informes"><i class="fa-solid fa-chart-bar"></i> Informes</a>
+          <a href="#" class="nav-item" data-page="productos"><i class="fa-solid fa-cube"></i> Productos</a>
+          <a href="#" class="nav-item" data-page="servicios"><i class="fa-solid fa-wrench"></i> Servicios</a>
+          <a href="#" class="nav-item" data-page="ingresos"><i class="fa-solid fa-piggy-bank"></i> Ingresos</a>
+          <a href="#" class="nav-item" data-page="gastos"><i class="fa-solid fa-credit-card"></i> Gastos</a>
+          <a href="#" class="nav-item" data-page="catalogo"><i class="fa-solid fa-book-open"></i> Catálogo</a>
+          <a href="#" class="nav-item" data-page="ajustes"><i class="fa-solid fa-gear"></i> Ajustes</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="logo-icon-sm"><i class="fa-solid fa-grip"></i></div>
+          <div>
+            <div class="logo-sub-sm">Bienvenido de nuevo,</div>
+            <div class="logo-title-sm">Pro Ventas Magic</div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" id="themeToggleMobile"><i class="fa-solid fa-moon"></i></button>
+          <button class="icon-btn"><i class="fa-solid fa-bell"></i></button>
+        </div>
+      </header>
+
+      <div class="pages">
+
+        <!-- INICIO -->
+        <div class="page active" id="page-inicio">
+          <div class="page-content">
+            <section class="section">
+              <div class="section-title">REGISTRO</div>
+              <div class="card-grid three">
+                <div class="module-card" data-page="nuevo-pedido"><div class="card-icon"><i class="fa-solid fa-file-circle-plus"></i></div><span>Nuevo Pedido</span></div>
+                <div class="module-card" data-page="pedidos"><div class="card-icon"><i class="fa-solid fa-bag-shopping"></i></div><span>Pedidos</span></div>
+                <div class="module-card" data-page="clientes"><div class="card-icon"><i class="fa-solid fa-users"></i></div><span>Clientes</span></div>
+              </div>
+            </section>
+            <section class="section">
+              <div class="section-title">MÓDULOS</div>
+              <div class="card-grid three">
+                <div class="module-card" data-page="informes"><div class="card-icon"><i class="fa-solid fa-chart-bar"></i></div><span>Informes</span></div>
+                <div class="module-card" data-page="productos"><div class="card-icon"><i class="fa-solid fa-cube"></i></div><span>Productos</span></div>
+                <div class="module-card" data-page="servicios"><div class="card-icon"><i class="fa-solid fa-wrench"></i></div><span>Servicios</span></div>
+                <div class="module-card" data-page="ajustes"><div class="card-icon"><i class="fa-solid fa-gear"></i></div><span>Ajustes</span></div>
+                <div class="module-card" data-page="ingresos"><div class="card-icon"><i class="fa-solid fa-piggy-bank"></i></div><span>Ingresos</span></div>
+                <div class="module-card" data-page="gastos"><div class="card-icon"><i class="fa-solid fa-credit-card"></i></div><span>Gastos</span></div>
+              </div>
+            </section>
+            <section class="section">
+              <div class="module-card wide" data-page="catalogo"><div class="card-icon"><i class="fa-solid fa-book-open"></i></div><span>Catálogo de productos</span></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- PRODUCTOS -->
+        <div class="page" id="page-productos">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Productos</h2>
+          </div>
+          <div class="subpage-body">
+            <div class="search-bar-row">
+              <div class="search-bar">
+                <input type="text" id="filtro-productos" placeholder="Filtrar producto" oninput="filtrarProductos()">
+                <i class="fa-solid fa-filter search-icon"></i>
+              </div>
+              <button class="barcode-btn"><i class="fa-solid fa-barcode"></i></button>
+            </div>
+            <div class="item-list" id="lista-productos"></div>
+          </div>
+          <button class="fab" onclick="showPage('nuevo-producto')"><i class="fa-solid fa-plus"></i> Nuevo producto</button>
+        </div>
+
+        <!-- EDITAR PRODUCTO -->
+        <div class="page" id="page-editar-producto">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('productos')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Actualizar producto</h2>
+            <button class="icon-btn" style="margin-left:auto" onclick="if(confirm('¿Eliminar este producto?')){eliminarProducto(productoEditando.id);navigate('productos')}"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+          </div>
+          <div class="subpage-body form-body">
+            <div class="form-field-group"><label>Nombre</label><input type="text" id="ep-nombre" placeholder="Nombre del producto"></div>
+            <div class="form-field-group"><label>Descripción</label><textarea id="ep-descripcion" placeholder="Descripción" rows="2"></textarea></div>
+            <div class="form-field-group"><label>Valor comercial</label><input type="number" id="ep-precio" placeholder="Valor comercial" step="1"></div>
+            <div class="form-field-group"><label>Valor de coste</label><input type="number" id="ep-coste" placeholder="Valor de coste" step="1"></div>
+            <div class="form-field-group">
+              <label>Código de barras</label>
+              <div class="input-with-icon">
+                <input type="text" id="ep-barcode" placeholder="Código de barras">
+                <i class="fa-solid fa-barcode field-icon" style="color:#ef4444"></i>
+              </div>
+            </div>
+            <div class="form-field-group"><label>Codigo interno</label><input type="text" id="ep-codigo" placeholder="Codigo interno"></div>
+            <div class="form-field-group">
+              <label>Unidad</label>
+              <div class="arrow-field">
+                <select id="ep-unidad"><option value="">No informado</option><option>Unidad</option><option>Kg</option><option>Litro</option><option>Metro</option><option>Caja</option></select>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Stock</label>
+              <div class="arrow-field">
+                <input type="number" id="ep-stock" placeholder="No disponible">
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Foto</label>
+              <div class="arrow-field" onclick="document.getElementById('ep-foto-file').click()" style="cursor:pointer">
+                <span id="ep-foto-label" style="color:#9ca3af;font-size:14px;flex:1">No informado</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+              <input type="file" id="ep-foto-file" accept="image/*" style="display:none" onchange="previewEPFoto(this)">
+              <div style="position:relative;display:inline-block;margin-top:8px">
+                <img id="ep-foto-preview" src="" style="display:none;width:100%;max-height:150px;object-fit:contain;border-radius:10px;background:var(--bg3)">
+                <button onclick="eliminarFotoProducto()" style="display:none;position:absolute;top:6px;right:6px;background:#ef4444;border:none;border-radius:50%;width:28px;height:28px;color:#fff;cursor:pointer;font-size:13px" id="ep-foto-del-btn"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+          <button class="fab-save" onclick="actualizarProducto()">Actualizar</button>
+        </div>
+
+        <!-- NUEVO PRODUCTO -->
+        <div class="page" id="page-nuevo-producto">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('productos')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Nuevo producto</h2>
+          </div>
+          <div class="subpage-body form-body">
+            <div class="form-field-group"><label>Nombre</label><input type="text" id="np-nombre" placeholder="Nombre del producto"></div>
+            <div class="form-field-group"><label>Descripción</label><textarea id="np-descripcion" placeholder="Descripción" rows="2"></textarea></div>
+            <div class="form-field-group"><label>Valor comercial</label><input type="number" id="np-precio" placeholder="Valor comercial" step="1"></div>
+            <div class="form-field-group"><label>Valor de coste</label><input type="number" id="np-coste" placeholder="Valor de coste" step="1"></div>
+            <div class="form-field-group">
+              <label>Código de barras</label>
+              <div class="input-with-icon">
+                <input type="text" id="np-barcode" placeholder="Código de barras">
+                <i class="fa-solid fa-barcode field-icon" style="color:#ef4444"></i>
+              </div>
+            </div>
+            <div class="form-field-group"><label>Codigo interno</label><input type="text" id="np-codigo" placeholder="Codigo interno"></div>
+            <div class="form-field-group"><label>Categoría</label><input type="text" id="np-categoria" placeholder="Categoría"></div>
+            <div class="form-field-group">
+              <label>Unidad</label>
+              <div class="arrow-field">
+                <select id="np-unidad"><option value="">No informado</option><option>Unidad</option><option>Kg</option><option>Litro</option><option>Metro</option><option>Caja</option></select>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Stock</label>
+              <div class="arrow-field">
+                <input type="number" id="np-stock" placeholder="No disponible">
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Foto</label>
+              <div class="arrow-field" onclick="document.getElementById('np-foto-file').click()" style="cursor:pointer">
+                <span id="np-foto-label" style="color:#9ca3af;font-size:14px;flex:1">No informado</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+              <input type="file" id="np-foto-file" accept="image/*" style="display:none" onchange="previewNPFoto(this)">
+              <img id="np-foto-preview" src="" style="display:none;width:100%;max-height:150px;object-fit:contain;border-radius:10px;margin-top:8px;background:var(--bg3)">
+            </div>
+          </div>
+          <button class="fab-save" onclick="guardarNuevoProducto()">Guardar</button>
+        </div>
+
+        <!-- CLIENTES -->
+        <div class="page" id="page-clientes">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Clientes</h2>
+          </div>
+          <div class="subpage-body">
+            <div class="search-bar-row">
+              <div class="search-bar" style="flex:1">
+                <input type="text" id="filtro-clientes" placeholder="Filtrar cliente" oninput="filtrarClientes()">
+                <i class="fa-solid fa-filter search-icon"></i>
+              </div>
+            </div>
+            <div class="item-list" id="lista-clientes"></div>
+          </div>
+          <button class="fab" onclick="showPage('nuevo-cliente')"><i class="fa-solid fa-plus"></i> Nuevo cliente</button>
+        </div>
+
+        <!-- NUEVO CLIENTE -->
+        <div class="page" id="page-nuevo-cliente">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('clientes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Nuevo Cliente</h2>
+          </div>
+          <div class="subpage-body form-body">
+            <div class="form-field-group"><label>Nombre</label><input type="text" id="nc-nombre" placeholder="Nombre del cliente"></div>
+            <div class="form-field-group">
+              <label>Teléfono 1</label>
+              <div class="input-with-icons">
+                <input type="tel" id="nc-tel1" placeholder="Teléfono">
+                <i class="fa-solid fa-phone field-icon"></i>
+                <i class="fa-brands fa-whatsapp field-icon" style="color:#25D366"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Teléfono 2</label>
+              <div class="input-with-icons">
+                <input type="tel" id="nc-tel2" placeholder="Teléfono">
+                <i class="fa-solid fa-phone field-icon"></i>
+                <i class="fa-brands fa-whatsapp field-icon" style="color:#25D366"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Teléfono 3</label>
+              <div class="input-with-icons">
+                <input type="tel" id="nc-tel3" placeholder="Teléfono">
+                <i class="fa-solid fa-phone field-icon"></i>
+                <i class="fa-brands fa-whatsapp field-icon" style="color:#25D366"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>E-mail</label>
+              <div class="input-with-icon">
+                <input type="email" id="nc-email" placeholder="E-mail">
+                <i class="fa-solid fa-envelope field-icon"></i>
+              </div>
+            </div>
+            <div class="form-field-group"><label>Documento de identificación</label><input type="text" id="nc-documento" placeholder="Documento"></div>
+            <div class="form-field-group">
+              <label>Dirección</label>
+              <div class="arrow-field">
+                <input type="text" id="nc-direccion" placeholder="Dirección" style="border:none;background:transparent;flex:1;outline:none;font-family:inherit;font-size:14px;color:var(--text)">
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Fecha de Cumpleaños</label>
+              <div class="two-col">
+                <div class="arrow-field">
+                  <select id="nc-dia" style="border:none;background:transparent;flex:1;font-family:inherit;font-size:14px;color:var(--text);outline:none">
+                    <option value="">Día</option>
+                    <option>-</option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down field-icon" style="font-size:11px"></i>
+                </div>
+                <div class="arrow-field">
+                  <select id="nc-mes" style="border:none;background:transparent;flex:1;font-family:inherit;font-size:14px;color:var(--text);outline:none">
+                    <option value="">Mes</option>
+                    <option>-</option>
+                    <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+                    <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+                    <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+                    <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+                  </select>
+                  <i class="fa-solid fa-chevron-down field-icon" style="font-size:11px"></i>
+                </div>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Nota</label>
+              <div class="arrow-field">
+                <input type="text" id="nc-nota" placeholder="Nota" style="border:none;background:transparent;flex:1;outline:none;font-family:inherit;font-size:14px;color:var(--text)">
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+          </div>
+          <button class="fab-save" onclick="guardarNuevoCliente()">Guardar</button>
+        </div>
+
+        <!-- NUEVO PEDIDO: paso 1 - seleccionar cliente -->
+        <div class="page" id="page-nuevo-pedido">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Nuevo Pedido</h2>
+          </div>
+          <div class="subpage-body form-body">
+            <div class="form-field-group">
+              <label>Tipo</label>
+              <input type="text" id="ped-tipo" value="Pedido">
+            </div>
+            <div class="form-field-group">
+              <label>Fecha de Pedido</label>
+              <div class="input-with-icon">
+                <input type="date" id="ped-fecha">
+                <i class="fa-solid fa-calendar field-icon"></i>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label>Cliente</label>
+              <div class="arrow-field" onclick="showClientePicker()" style="cursor:pointer">
+                <span id="ped-cliente-label" style="color:#b0b8cc;font-size:14px;flex:1">Seleccionar Cliente</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+          </div>
+          <button class="fab-save" onclick="continuarPedido()">Continuar</button>
+        </div>
+
+        <!-- PEDIDO: paso 2 - formulario completo -->
+        <div class="page" id="page-pedido-items">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="showPage('nuevo-pedido')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2 id="pedido-titulo">Pedido</h2>
+            <button class="icon-btn" style="margin-left:auto"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+          </div>
+          <div class="subpage-body form-body">
+
+            <!-- Info resumen -->
+            <div class="pedido-info-card" id="pedido-info-card"></div>
+
+            <!-- Productos -->
+            <div class="form-field-group">
+              <label>Productos</label>
+              <div id="pedido-productos-agregados"></div>
+              <div class="arrow-field plus-field" onclick="showProductoPicker()" style="cursor:pointer">
+                <span style="color:#b0b8cc;font-size:14px;flex:1">Agregar producto</span>
+                <i class="fa-solid fa-plus field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Servicios -->
+            <div class="form-field-group">
+              <label>Servicios</label>
+              <div id="pedido-servicios-agregados"></div>
+              <div class="arrow-field plus-field" onclick="showServicioPicker()" style="cursor:pointer">
+                <span style="color:#b0b8cc;font-size:14px;flex:1">Agregar servicio</span>
+                <i class="fa-solid fa-plus field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Informaciones adicionales -->
+            <div class="form-field-group">
+              <label>Informaciones adicionales</label>
+              <div class="arrow-field" style="cursor:pointer">
+                <span style="color:#b0b8cc;font-size:14px;flex:1">Informaciones adicionales</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Descuento -->
+            <div class="form-field-group">
+              <label>Descuento</label>
+              <div class="arrow-field">
+                <input type="number" id="ped-descuento" placeholder="Descuento" min="0" step="1" oninput="recalcularTotal()">
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- IVA -->
+            <div class="form-field-group">
+              <label>IVA</label>
+              <div class="arrow-field" style="cursor:pointer" onclick="toggleIVA()">
+                <span id="ped-iva-label" style="flex:1;font-size:14px;color:#b0b8cc">IVA</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="form-field-group">
+              <label>Total</label>
+              <div class="arrow-field">
+                <span id="ped-total-display" style="flex:1;font-size:16px;font-weight:700;color:var(--text)">0</span>
+              </div>
+            </div>
+
+            <!-- Formas de pago -->
+            <div class="form-field-group">
+              <label>Formas de pago</label>
+              <div class="arrow-field" onclick="showPagoPicker()" style="cursor:pointer">
+                <span id="ped-pago-label" style="color:#b0b8cc;font-size:14px;flex:1">Formas de pago</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Observación -->
+            <div class="form-field-group">
+              <label>Observación</label>
+              <textarea id="ped-observacion" placeholder="Observación" rows="2"></textarea>
+            </div>
+
+          </div>
+          <button class="fab-save" onclick="crearPedidoFinal()">Guardar</button>
+        </div>
+
+        <!-- PEDIDOS lista -->
+        <!-- PEDIDOS: menú principal -->
+        <div class="page" id="page-pedidos">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Pedidos</h2>
+          </div>
+          <div class="subpage-body" style="padding-top:16px">
+            <div class="menu-options-group">
+              <div class="menu-option-row" onclick="showPage('nuevo-pedido')">
+                <div class="menu-option-left">
+                  <i class="fa-solid fa-plus menu-option-icon"></i>
+                  <span>Registrar Pedido</span>
+                </div>
+                <i class="fa-solid fa-arrow-right menu-option-arrow"></i>
+              </div>
+              <div class="menu-option-divider"></div>
+              <div class="menu-option-row" onclick="abrirPedidosRecientes()">
+                <div class="menu-option-left">
+                  <i class="fa-solid fa-magnifying-glass menu-option-icon"></i>
+                  <span>Pedidos recientes</span>
+                </div>
+                <i class="fa-solid fa-arrow-right menu-option-arrow"></i>
+              </div>
+              <div class="menu-option-divider"></div>
+              <div class="menu-option-row" onclick="showPage('pedidos-por-cliente')">
+                <div class="menu-option-left">
+                  <i class="fa-solid fa-magnifying-glass menu-option-icon"></i>
+                  <span>Buscar por cliente</span>
+                </div>
+                <i class="fa-solid fa-arrow-right menu-option-arrow"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PEDIDOS RECIENTES: lista filtrable -->
+        <div class="page" id="page-pedidos-recientes">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="showPage('pedidos')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Reciente</h2>
+          </div>
+          <div class="subpage-body" style="padding-top:12px">
+            <div class="search-bar-row">
+              <div class="search-bar" style="flex:1">
+                <input type="text" id="filtro-recientes" placeholder="Filtrar por número o cliente" oninput="filtrarPedidosRecientes()">
+                <i class="fa-solid fa-filter search-icon"></i>
+              </div>
+            </div>
+            <div id="lista-recientes" class="pedidos-lista"></div>
+            <div class="empty-list" id="recientes-empty" style="display:none"><i class="fa-solid fa-bag-shopping"></i><p>No hay pedidos aún</p></div>
+          </div>
+        </div>
+
+        <!-- PEDIDOS POR CLIENTE -->
+        <div class="page" id="page-pedidos-por-cliente">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="showPage('pedidos')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Pedidos por cliente</h2>
+          </div>
+          <div class="subpage-body" style="padding-top:16px">
+            <div class="menu-options-group">
+              <div class="menu-option-row" onclick="showClientePickerPedidos()" style="cursor:pointer">
+                <div class="menu-option-left" style="gap:0">
+                  <span id="pedidos-cliente-label" style="font-size:15px;font-weight:600">Seleccionar Cliente</span>
+                </div>
+                <i class="fa-solid fa-arrow-right menu-option-arrow"></i>
+              </div>
+            </div>
+            <div id="lista-pedidos-cliente" style="margin-top:12px"></div>
+          </div>
+        </div>
+
+        <!-- DETALLE PEDIDO -->
+        <div class="page" id="page-detalle-pedido">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('pedidos')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2 id="detalle-titulo">Pedido</h2>
+            <button class="icon-btn" onclick="showMenuPedido()"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="picker-tabs">
+            <button class="picker-tab active" id="dtab-pedido" onclick="switchDetalleTab('pedido')">Pedido</button>
+            <button class="picker-tab" id="dtab-pagos" onclick="switchDetalleTab('pagos')">Pagos</button>
+            <button class="picker-tab" id="dtab-horario" onclick="switchDetalleTab('horario')">Horario</button>
+          </div>
+
+          <!-- Tab Pedido -->
+          <div id="dtab-content-pedido" class="subpage-body form-body">
+            <!-- Generar Documento -->
+            <button class="btn-generar-doc" onclick="generarDocumento()">
+              <i class="fa-solid fa-file-lines"></i> Generar Documento
+            </button>
+            <button class="btn-generar-doc" onclick="enviarCorreoPedido()" style="background:#10b981;margin-top:8px">
+              <i class="fa-solid fa-envelope"></i> Enviar por Correo
+            </button>
+
+            <!-- Fecha -->
+            <div class="form-field-group">
+              <label>Fecha de Pedido</label>
+              <div class="arrow-field">
+                <input type="date" id="det-fecha">
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Cliente -->
+            <div class="form-field-group">
+              <label>Cliente</label>
+              <div class="arrow-field">
+                <span id="det-cliente" style="flex:1;font-size:14px;color:var(--text2)">—</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Situación -->
+            <div class="form-field-group">
+              <label>Situación</label>
+              <div class="arrow-field" onclick="showModalEstado()" style="cursor:pointer">
+                <span id="det-estado-dot" style="width:12px;height:12px;border-radius:3px;background:#f97316;display:inline-block;margin-right:8px;flex-shrink:0"></span>
+                <span id="det-estado" style="flex:1;font-size:14px;font-weight:700">Pendiente</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Productos -->
+            <div class="form-field-group">
+              <label>Productos</label>
+              <div class="arrow-field plus-field" onclick="abrirAgregarProductoDetalle()" style="cursor:pointer">
+                <span style="color:#b0b8cc;font-size:14px;flex:1">Agregar producto</span>
+                <i class="fa-solid fa-plus field-icon"></i>
+              </div>
+              <div id="det-productos-list"></div>
+            </div>
+
+            <!-- Descuento -->
+            <div class="form-field-group">
+              <label>Descuento</label>
+              <div class="arrow-field">
+                <input type="number" id="det-descuento" placeholder="0" oninput="recalcularDetalle()">
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- IVA -->
+            <div class="form-field-group">
+              <label>IVA</label>
+              <div class="arrow-field" onclick="toggleIVADetalle()" style="cursor:pointer">
+                <span id="det-iva-label" style="flex:1;font-size:14px;color:#b0b8cc">IVA</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="form-field-group">
+              <label>Total</label>
+              <div class="arrow-field">
+                <span id="det-total" style="flex:1;font-size:16px;font-weight:800;color:var(--text)">0</span>
+              </div>
+            </div>
+
+            <!-- Forma de pago -->
+            <div class="form-field-group">
+              <label>Formas de pago</label>
+              <div class="arrow-field" onclick="showPagoPickerDetalle()" style="cursor:pointer">
+                <span id="det-pago" style="flex:1;font-size:14px;color:#b0b8cc">Formas de pago</span>
+                <i class="fa-solid fa-arrow-right field-icon"></i>
+              </div>
+            </div>
+
+            <!-- Observación -->
+            <div class="form-field-group">
+              <label>Observación</label>
+              <textarea id="det-observacion" placeholder="Observación" rows="2"></textarea>
+            </div>
+          </div>
+
+          <!-- Tab Pagos -->
+          <div id="dtab-content-pagos" class="subpage-body form-body" style="display:none">
+            <div class="empty-list" style="margin-top:40px"><i class="fa-solid fa-credit-card"></i><p>Sin pagos registrados</p></div>
+          </div>
+
+          <!-- Tab Horario -->
+          <div id="dtab-content-horario" class="subpage-body form-body" style="display:none">
+            <div class="empty-list" style="margin-top:40px"><i class="fa-solid fa-clock"></i><p>Sin horarios</p></div>
+          </div>
+
+          <!-- Botones fijos -->
+          <div class="det-footer">
+            <button class="det-btn-actualizar" onclick="actualizarPedido()">Actualizar</button>
+            <button class="det-btn-menu" onclick="showMenuPedido()"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+          </div>
+        </div>
+
+        <!-- INFORMES -->
+        <div class="page" id="page-informes">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Informes</h2>
+          </div>
+          <div class="subpage-body">
+            <div class="stats-grid" id="stats-grid"></div>
+            <div style="padding:16px">
+              <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:16px">
+                <div style="font-weight:700;font-size:14px;margin-bottom:12px">Ventas por mes</div>
+                <canvas id="chart-ventas" height="200"></canvas>
+              </div>
+              <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:16px">
+                <div style="font-weight:700;font-size:14px;margin-bottom:12px">Pedidos por estado</div>
+                <canvas id="chart-estados" height="200"></canvas>
+              </div>
+              <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:16px">
+                <div style="font-weight:700;font-size:14px;margin-bottom:12px">Top 5 productos</div>
+                <canvas id="chart-productos" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SERVICIOS -->
+        <div class="page" id="page-servicios">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Servicios</h2>
+          </div>
+          <div class="subpage-body">
+            <div class="item-list" id="lista-servicios"></div>
+          </div>
+          <button class="fab" onclick="showModal('modal-servicio')"><i class="fa-solid fa-plus"></i> Nuevo servicio</button>
+        </div>
+
+        <!-- INGRESOS -->
+        <div class="page" id="page-ingresos">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Ingresos</h2>
+          </div>
+          <div class="subpage-body">
+            <div class="item-list" id="lista-ingresos"></div>
+          </div>
+          <button class="fab" onclick="showModal('modal-ingreso')"><i class="fa-solid fa-plus"></i> Nuevo ingreso</button>
+        </div>
+
+        <!-- GASTOS -->
+        <div class="page" id="page-gastos">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Gastos</h2>
+          </div>
+          <div class="subpage-body">
+            <div class="item-list" id="lista-gastos"></div>
+          </div>
+          <button class="fab" onclick="showModal('modal-gasto')"><i class="fa-solid fa-plus"></i> Nuevo gasto</button>
+        </div>
+
+        <!-- CATÁLOGO -->
+        <div class="page" id="page-catalogo">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Catálogo de Productos</h2>
+          </div>
+          <div class="subpage-body">
+            <div class="catalogo-grid" id="catalogo-grid"></div>
+          </div>
+        </div>
+
+        <!-- AJUSTES -->
+        <div class="page" id="page-ajustes">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('inicio')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Ajustes</h2>
+          </div>
+          <div class="subpage-body" style="padding-top:16px">
+
+            <!-- Perfil -->
+            <div class="settings-profile-card">
+              <div class="settings-avatar" id="settings-avatar">JP</div>
+              <div>
+                <div class="settings-username" id="settings-username">Juan Pérez</div>
+                <div class="settings-role">ADMINISTRADOR</div>
+              </div>
+            </div>
+
+            <!-- MI NEGOCIO -->
+            <div class="settings-section-label">MI NEGOCIO</div>
+            <div class="settings-group">
+              <div class="settings-row" onclick="navigate('mi-negocio')">
+                <div class="settings-row-icon" style="background:#e8f0fe"><i class="fa-solid fa-building" style="color:#3b5bdb"></i></div>
+                <span class="settings-row-label">Datos comerciales</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="navigate('mi-direccion')">
+                <div class="settings-row-icon" style="background:#e8f0fe"><i class="fa-solid fa-location-dot" style="color:#3b5bdb"></i></div>
+                <span class="settings-row-label">Dirección</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="navigate('mi-logo')">
+                <div class="settings-row-icon" style="background:#fef9e7"><i class="fa-solid fa-image" style="color:#f59e0b"></i></div>
+                <span class="settings-row-label">Logo</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="navigate('mi-firma')">
+                <div class="settings-row-icon" style="background:#e6f9f0"><i class="fa-solid fa-signature" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Firma</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+            </div>
+
+            <!-- CUENTA -->
+            <div class="settings-section-label">CUENTA</div>
+            <div class="settings-group">
+              <div class="settings-row" onclick="showModal('modal-perfil')">
+                <div class="settings-row-icon" style="background:#e8f0fe"><i class="fa-solid fa-user" style="color:#3b5bdb"></i></div>
+                <span class="settings-row-label">Perfil de usuario</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="showModal('modal-seguridad')">
+                <div class="settings-row-icon" style="background:#e6f9f0"><i class="fa-solid fa-shield-halved" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Seguridad y contraseña</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+            </div>
+
+            <!-- BASE DE DATOS -->
+            <div class="settings-section-label">BASE DE DATOS</div>
+            <div class="settings-group">
+              <div class="settings-row" onclick="navigate('importar-clientes')">
+                <div class="settings-row-icon" style="background:#e8f0fe"><i class="fa-solid fa-file-arrow-up" style="color:#3b5bdb"></i></div>
+                <span class="settings-row-label">Importar Clientes (Excel)</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="navigate('importar-productos')">
+                <div class="settings-row-icon" style="background:#e8f0fe"><i class="fa-solid fa-file-arrow-up" style="color:#3b5bdb"></i></div>
+                <span class="settings-row-label">Importar Productos (Excel)</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="window.location.href='/api/exportar/clientes'">
+                <div class="settings-row-icon" style="background:#e8f8f0"><i class="fa-solid fa-file-arrow-down" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Exportar Clientes (Excel)</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="window.location.href='/api/exportar/productos'">
+                <div class="settings-row-icon" style="background:#e8f8f0"><i class="fa-solid fa-file-arrow-down" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Exportar Productos (Excel)</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="window.location.href='/api/exportar/pedidos'">
+                <div class="settings-row-icon" style="background:#e8f8f0"><i class="fa-solid fa-file-arrow-down" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Exportar Pedidos (Excel)</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="limpiarClientes()">
+                <div class="settings-row-icon" style="background:#fee2e2"><i class="fa-solid fa-trash" style="color:#ef4444"></i></div>
+                <span class="settings-row-label">Limpiar Clientes</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="limpiarProductos()">
+                <div class="settings-row-icon" style="background:#fee2e2"><i class="fa-solid fa-trash" style="color:#ef4444"></i></div>
+                <span class="settings-row-label">Limpiar Productos</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="reiniciarPedidos()">
+                <div class="settings-row-icon" style="background:#fee2e2"><i class="fa-solid fa-trash" style="color:#ef4444"></i></div>
+                <span class="settings-row-label">Reiniciar Pedidos</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+            </div>
+
+            <!-- PREFERENCIAS -->
+            <div class="settings-section-label">PREFERENCIAS</div>
+            <div class="settings-group">
+              <div class="settings-row">
+                <div class="settings-row-icon" style="background:#fef9e7"><i class="fa-solid fa-bell" style="color:#f59e0b"></i></div>
+                <span class="settings-row-label">Notificaciones</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="toggleDarkMode()">
+                <div class="settings-row-icon" style="background:#ede9fe"><i class="fa-solid fa-moon" style="color:#7c3aed"></i></div>
+                <span class="settings-row-label">Modo oscuro</span>
+                <div class="settings-toggle" id="dark-toggle">
+                  <div class="settings-toggle-knob"></div>
+                </div>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row">
+                <div class="settings-row-icon" style="background:#e0f7fa"><i class="fa-solid fa-globe" style="color:#06b6d4"></i></div>
+                <span class="settings-row-label">Idioma</span>
+                <span class="settings-row-value">ESPAÑOL</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+            </div>
+
+            <!-- APLICACIÓN -->
+            <div class="settings-section-label">APLICACIÓN</div>
+            <div class="settings-group">
+              <div class="settings-row">
+                <div class="settings-row-icon" style="background:#f1f5f9"><i class="fa-solid fa-mobile-screen" style="color:#64748b"></i></div>
+                <span class="settings-row-label">Versión de la app</span>
+                <span class="settings-row-value">2.0.0</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row">
+                <div class="settings-row-icon" style="background:#fce7f3"><i class="fa-solid fa-circle-question" style="color:#ec4899"></i></div>
+                <span class="settings-row-label">Centro de ayuda</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+            </div>
+
+            <!-- Cerrar sesión -->
+            <div class="settings-group settings-logout" onclick="showToast('Sesión cerrada','success')">
+              <div class="settings-row" style="justify-content:center;gap:8px">
+                <i class="fa-solid fa-right-from-bracket" style="color:#ef4444"></i>
+                <span style="color:#ef4444;font-weight:700;font-size:15px">Cerrar sesión</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- MI NEGOCIO - DATOS COMERCIALES -->
+        <div class="page" id="page-mi-negocio">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Datos comerciales</h2>
+          </div>
+          <div class="subpage-body" style="padding:16px">
+            <div class="form-field-group"><label>Nombre empresa</label><input type="text" id="neg-nombre" placeholder="Nombre de tu empresa"></div>
+            <div class="form-field-group"><label>RUT</label><input type="text" id="neg-rut" placeholder="76.000.000-0"></div>
+            <div class="form-field-group"><label>Teléfono</label><input type="text" id="neg-telefono" placeholder="+56 9 0000 0000"></div>
+            <div class="form-field-group"><label>E-mail</label><input type="email" id="neg-email" placeholder="correo@empresa.cl"></div>
+            <div class="form-field-group"><label>WhatsApp</label><input type="text" id="neg-whatsapp" placeholder="+56 9 0000 0000"></div>
+            <div class="form-field-group"><label>Instagram</label><input type="text" id="neg-instagram" placeholder="@tuempresa"></div>
+            <div class="form-field-group"><label>Sitio web</label><input type="text" id="neg-web" placeholder="www.tuempresa.cl"></div>
+            <button class="btn-primary" style="width:100%;margin-top:12px" onclick="guardarNegocio()">Actualizar</button>
+          </div>
+        </div>
+
+        <!-- MI NEGOCIO - DIRECCIÓN -->
+        <div class="page" id="page-mi-direccion">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Dirección</h2>
+          </div>
+          <div class="subpage-body" style="padding:16px">
+            <div class="form-field-group"><label>Dirección</label><input type="text" id="neg-direccion" placeholder="Av. Ejemplo 1234"></div>
+            <div class="form-field-group"><label>Ciudad</label><input type="text" id="neg-ciudad" placeholder="Santiago"></div>
+            <div class="form-field-group"><label>Región</label><input type="text" id="neg-region" placeholder="Región Metropolitana"></div>
+            <div class="form-field-group"><label>País</label><input type="text" id="neg-pais" placeholder="Chile"></div>
+            <button class="btn-primary" style="width:100%;margin-top:12px" onclick="guardarDireccion()">Actualizar</button>
+          </div>
+        </div>
+
+        <!-- MI NEGOCIO - LOGO -->
+        <div class="page" id="page-mi-logo">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Logo</h2>
+          </div>
+          <div class="subpage-body" style="padding:16px;text-align:center">
+            <div id="logo-preview" style="margin:16px auto;width:180px;height:120px;border:2px dashed #ccc;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+              <i class="fa-solid fa-image" style="font-size:48px;color:#ccc"></i>
+            </div>
+            <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="previewLogo(this)">
+            <button class="btn-primary" style="width:100%;margin-top:12px" onclick="document.getElementById('logo-file').click()">Seleccionar imagen</button>
+            <button class="btn-primary" style="width:100%;margin-top:8px;background:#10b981" onclick="subirLogo()">Guardar Logo</button>
+          </div>
+        </div>
+
+        <!-- MI NEGOCIO - FIRMA -->
+        <div class="page" id="page-mi-firma">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Firma</h2>
+          </div>
+          <div class="subpage-body" style="padding:16px;text-align:center">
+            <div id="firma-preview" style="margin:16px auto;width:180px;height:120px;border:2px dashed #ccc;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+              <i class="fa-solid fa-signature" style="font-size:48px;color:#ccc"></i>
+            </div>
+            <input type="file" id="firma-file" accept="image/*" style="display:none" onchange="previewFirma(this)">
+            <button class="btn-primary" style="width:100%;margin-top:12px" onclick="document.getElementById('firma-file').click()">Seleccionar imagen</button>
+            <button class="btn-primary" style="width:100%;margin-top:8px;background:#10b981" onclick="subirFirma()">Guardar Firma</button>
+          </div>
+        </div>
+
+        <!-- IMPORTAR CLIENTES -->
+        <div class="page" id="page-importar-clientes">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Importar Clientes</h2>
+          </div>
+          <div class="subpage-body" style="padding-top:16px">
+
+            <!-- Drop zone -->
+            <div class="import-dropzone" id="import-dropzone" onclick="document.getElementById('import-file').click()" ondragover="dragOver(event)" ondrop="dropFile(event)">
+              <i class="fa-solid fa-file-arrow-up import-upload-icon"></i>
+              <div class="import-title">Subir archivo Excel</div>
+              <div class="import-subtitle">Formatos soportados: .xlsx, .xls, .csv</div>
+              <button class="import-select-btn" onclick="event.stopPropagation();document.getElementById('import-file').click()">Seleccionar archivo</button>
+              <input type="file" id="import-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleImportFile(this)">
+            </div>
+
+            <!-- File selected preview -->
+            <div id="import-preview" style="display:none">
+              <div class="import-file-info" id="import-file-info"></div>
+              <div class="import-table-wrap" id="import-table-wrap"></div>
+            </div>
+
+            <!-- Instrucciones -->
+            <div class="settings-section-label" style="margin-top:20px">INSTRUCCIONES</div>
+            <div class="import-instructions">
+              <ul>
+                <li>Asegúrate de que la primera fila contenga los nombres de las columnas.</li>
+                <li>Columna de nombre (obligatoria): <strong>"Razon Social"</strong>, <strong>"Razón Social"</strong>, <strong>"Nombre o Razon Social"</strong>, <strong>"Nombre"</strong> o <strong>"Contacto"</strong>.</li>
+                <li>Otras columnas soportadas: "Correo", "Teléfono" (o Celular), "Dirección", "RUT", "Giro", "Observación".</li>
+              </ul>
+            </div>
+
+            <button class="fab-save" id="import-btn" style="background:#c0c8d8;pointer-events:none" onclick="comenzarImportacion()">Comenzar Importación</button>
+          </div>
+        </div>
+
+        <!-- IMPORTAR PRODUCTOS -->
+        <div class="page" id="page-importar-productos">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Importar Productos</h2>
+          </div>
+          <div class="subpage-body" style="padding-top:16px">
+
+            <div class="import-dropzone" id="import-prod-dropzone" onclick="document.getElementById('import-prod-file').click()" ondragover="dragOverProd(event)" ondrop="dropFileProd(event)">
+              <i class="fa-solid fa-file-arrow-up import-upload-icon"></i>
+              <div class="import-title">Subir archivo Excel</div>
+              <div class="import-subtitle">Formatos soportados: .xlsx, .xls, .csv</div>
+              <button class="import-select-btn" onclick="event.stopPropagation();document.getElementById('import-prod-file').click()">Seleccionar archivo</button>
+              <input type="file" id="import-prod-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleImportProdFile(this)">
+            </div>
+
+            <div id="import-prod-preview" style="display:none">
+              <div class="import-file-info" id="import-prod-file-info"></div>
+              <div class="import-table-wrap" id="import-prod-table-wrap"></div>
+            </div>
+
+            <div class="settings-section-label" style="margin-top:20px">INSTRUCCIONES</div>
+            <div class="import-instructions">
+              <ul>
+                <li>La primera fila debe contener los nombres de las columnas.</li>
+                <li>Columna de nombre (obligatoria): <strong>"Productos"</strong> o <strong>"Producto"</strong>.</li>
+                <li>Columnas soportadas: <strong>"Tipo de producto"</strong>, <strong>"Variante"</strong>, <strong>"Codigo de barras"</strong>, <strong>"SKU"</strong>, <strong>"Stock"</strong>, <strong>"Cantidad por despachar"</strong>, <strong>"Cantidad disponible"</strong>, <strong>"Por Recibir"</strong>, <strong>"Marca"</strong>.</li>
+              </ul>
+            </div>
+
+            <button class="fab-save" id="import-prod-btn" style="background:#c0c8d8;pointer-events:none" onclick="comenzarImportacionProductos()">Comenzar Importación</button>
+          </div>
+        </div>
+        <div class="page" id="page-agregar-producto">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="showPage('pedido-items')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Agregar producto</h2>
+          </div>
+
+          <!-- Tabs -->
+          <div class="picker-tabs">
+            <button class="picker-tab active" id="tab-catalogar" onclick="switchPickerTab('catalogar')">Catalogar</button>
+            <button class="picker-tab" id="tab-registrar" onclick="switchPickerTab('registrar')">Registrar</button>
+          </div>
+
+          <!-- Tab: Catalogar -->
+          <div id="picker-tab-catalogar" class="subpage-body" style="padding-top:12px">
+            <div class="search-bar-row">
+              <div class="search-bar">
+                <input type="text" id="picker-search-prod" placeholder="Filtrar producto" oninput="filtrarPickerCheck()">
+                <i class="fa-solid fa-filter search-icon"></i>
+              </div>
+              <button class="barcode-btn"><i class="fa-solid fa-barcode"></i></button>
+            </div>
+            <div class="picker-check-list" id="picker-check-list"></div>
+          </div>
+
+          <!-- Tab: Registrar (formulario rápido) -->
+          <div id="picker-tab-registrar" class="subpage-body form-body" style="display:none">
+            <div class="form-field-group"><label>Nombre</label><input type="text" id="pr-nombre" placeholder="Nombre del producto"></div>
+            <div class="form-field-group"><label>Valor comercial</label><input type="number" id="pr-precio" placeholder="Valor comercial" step="1"></div>
+            <div class="form-field-group"><label>Valor de coste</label><input type="number" id="pr-coste" placeholder="Valor de coste" step="1"></div>
+            <div class="form-field-group"><label>Código de barras</label>
+              <div class="input-with-icon">
+                <input type="text" id="pr-barcode" placeholder="Código de barras">
+                <i class="fa-solid fa-barcode field-icon" style="color:#ef4444"></i>
+              </div>
+            </div>
+            <div class="form-field-group"><label>Código interno</label><input type="text" id="pr-codigo" placeholder="Código interno"></div>
+            <div class="form-field-group"><label>Stock</label><input type="number" id="pr-stock" placeholder="No disponible"></div>
+            <button class="fab-save" onclick="registrarYAgregarProducto()">Registrar y Agregar</button>
+          </div>
+
+          <!-- Botón seleccionar (solo visible en tab catalogar) -->
+          <button class="fab-save" id="btn-seleccionar-productos" onclick="confirmarSeleccionProductos()">
+            Seleccionar Productos
+          </button>
+        </div>
+
+      </div><!-- /pages -->
+
+      <nav class="bottom-nav">
+        <a href="#" class="bottom-nav-item active" data-page="inicio"><i class="fa-solid fa-house"></i><span>Inicio</span></a>
+        <a href="#" class="bottom-nav-item" data-page="pedidos"><i class="fa-solid fa-bag-shopping"></i><span>Pedidos</span></a>
+        <a href="#" class="bottom-nav-item" data-page="clientes"><i class="fa-solid fa-users"></i><span>Clientes</span></a>
+        <a href="#" class="bottom-nav-item" data-page="informes"><i class="fa-solid fa-chart-bar"></i><span>Ventas</span></a>
+      </nav>
+    </main>
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Perfil -->
+  <div class="modal-overlay" id="modal-perfil" onclick="closeModalOutside(event,'modal-perfil')">
+    <div class="modal">
+      <div class="modal-header"><h3>Perfil de usuario</h3><button onclick="closeModal('modal-perfil')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="form-field-group"><label>Nombre</label><input type="text" id="perfil-nombre" placeholder="Tu nombre" value="Juan Pérez"></div>
+      <div class="form-field-group"><label>Email</label><input type="email" id="perfil-email" placeholder="email@ejemplo.com"></div>
+      <div class="form-field-group"><label>Empresa</label><input type="text" id="perfil-empresa" placeholder="Nombre empresa" value="Pro Ventas Magic"></div>
+      <button class="fab-save" style="position:relative;border-radius:12px;margin-top:12px" onclick="guardarPerfil()">Guardar</button>
+    </div>
+  </div>
+
+  <!-- Seguridad -->
+  <div class="modal-overlay" id="modal-seguridad" onclick="closeModalOutside(event,'modal-seguridad')">
+    <div class="modal">
+      <div class="modal-header"><h3>Seguridad y contraseña</h3><button onclick="closeModal('modal-seguridad')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="form-field-group"><label>Contraseña actual</label><input type="password" id="seg-actual" placeholder="••••••••"></div>
+      <div class="form-field-group"><label>Nueva contraseña</label><input type="password" id="seg-nueva" placeholder="••••••••"></div>
+      <div class="form-field-group"><label>Confirmar contraseña</label><input type="password" id="seg-confirma" placeholder="••••••••"></div>
+      <button class="fab-save" style="position:relative;border-radius:12px;margin-top:12px" onclick="showToast('Contraseña actualizada','success');closeModal('modal-seguridad')">Guardar</button>
+    </div>
+  </div>
+
+  <!-- Producto picker para pedido — ahora es una página completa -->
+
+  <!-- Servicio picker para pedido -->
+  <div class="modal-overlay" id="modal-servicio-picker" onclick="closeModalOutside(event,'modal-servicio-picker')">
+    <div class="modal modal-tall">
+      <div class="modal-header"><h3>Agregar Servicio</h3><button onclick="closeModal('modal-servicio-picker')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="item-list" id="picker-lista-serv" style="max-height:360px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+  <!-- Forma de pago picker -->
+  <div class="modal-overlay" id="modal-pago-picker" onclick="closeModalOutside(event,'modal-pago-picker')">
+    <div class="modal">
+      <div class="modal-header"><h3>Forma de Pago</h3><button onclick="closeModal('modal-pago-picker')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="item-list" style="max-height:400px;overflow-y:auto">
+        <div class="item-card" onclick="seleccionarPago('Efectivo')"><div class="item-info"><div class="item-name">&#x1F4B5; Efectivo</div></div></div>
+        <div class="item-card" onclick="seleccionarPago('Transferencia')"><div class="item-info"><div class="item-name">&#x1F3E6; Transferencia</div></div></div>
+        <div class="item-card" onclick="seleccionarPago('Tarjeta débito')"><div class="item-info"><div class="item-name">&#x1F4B3; Tarjeta débito</div></div></div>
+        <div class="item-card" onclick="seleccionarPago('Tarjeta crédito')"><div class="item-info"><div class="item-name">&#x1F4B3; Tarjeta crédito</div></div></div>
+        <div class="item-card" onclick="seleccionarPago('Cheque')"><div class="item-info"><div class="item-name">&#x1F4C4; Cheque</div></div></div>
+        <div class="item-card" onclick="seleccionarPago('Crédito (debe)')"><div class="item-info"><div class="item-name">&#x1F4CB; Crédito (debe)</div></div></div>
+        <div class="item-card" onclick="seleccionarPago('Cobra vendedor')"><div class="item-info"><div class="item-name">&#x1F9FE; Cobra vendedor</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="modal-cliente-picker" onclick="closeModalOutside(event,'modal-cliente-picker')">
+    <div class="modal modal-tall">
+      <div class="modal-header"><h3>Seleccionar Cliente</h3><button onclick="closeModal('modal-cliente-picker')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="search-bar" style="margin-bottom:12px"><input type="text" id="picker-filtro" placeholder="Buscar..." oninput="filtrarPickerCliente()"><i class="fa-solid fa-magnifying-glass search-icon"></i></div>
+      <div class="item-list" id="picker-lista" style="max-height:320px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-servicio" onclick="closeModalOutside(event,'modal-servicio')">
+    <div class="modal">
+      <div class="modal-header"><h3>Nuevo Servicio</h3><button onclick="closeModal('modal-servicio')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="form-field-group"><label>Nombre</label><input type="text" id="s-nombre" placeholder="Nombre"></div>
+      <div class="form-field-group"><label>Descripción</label><input type="text" id="s-descripcion" placeholder="Descripción"></div>
+      <div class="form-field-group"><label>Precio</label><input type="number" id="s-precio" placeholder="0" step="1"></div>
+      <button class="fab-save" style="position:relative;border-radius:14px;margin-top:12px" onclick="guardarServicio()">Guardar</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-ingreso" onclick="closeModalOutside(event,'modal-ingreso')">
+    <div class="modal">
+      <div class="modal-header"><h3>Nuevo Ingreso</h3><button onclick="closeModal('modal-ingreso')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="form-field-group"><label>Descripción</label><input type="text" id="i-descripcion" placeholder="Descripción"></div>
+      <div class="form-field-group"><label>Categoría</label><select id="i-categoria"><option>Ventas</option><option>Servicios</option><option>Otro</option></select></div>
+      <div class="form-field-group"><label>Monto</label><input type="number" id="i-monto" placeholder="0" step="1"></div>
+      <div class="form-field-group"><label>Fecha</label><input type="date" id="i-fecha"></div>
+      <button class="fab-save" style="position:relative;border-radius:14px;margin-top:12px" onclick="guardarIngreso()">Guardar</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-gasto" onclick="closeModalOutside(event,'modal-gasto')">
+    <div class="modal">
+      <div class="modal-header"><h3>Nuevo Gasto</h3><button onclick="closeModal('modal-gasto')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="form-field-group"><label>Descripción</label><input type="text" id="g-descripcion" placeholder="Descripción"></div>
+      <div class="form-field-group"><label>Categoría</label><select id="g-categoria"><option>Inventario</option><option>Operaciones</option><option>Marketing</option><option>Otro</option></select></div>
+      <div class="form-field-group"><label>Monto</label><input type="number" id="g-monto" placeholder="0" step="1"></div>
+      <div class="form-field-group"><label>Fecha</label><input type="date" id="g-fecha"></div>
+      <button class="fab-save" style="position:relative;border-radius:14px;margin-top:12px" onclick="guardarGasto()">Guardar</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="/js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(() => console.log('SW registrado'));
+    }
+  </script>
+</body>
+</html>
