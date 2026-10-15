@@ -1,6 +1,6 @@
 const PDFDocument = require('pdfkit');
 
-module.exports = function generarPDF(pedido, clientes) {
+module.exports = function generarPDF(pedido, clientes, negocio = {}) {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: 40, size: 'A4' });
     const buffers = [];
@@ -8,11 +8,11 @@ module.exports = function generarPDF(pedido, clientes) {
     doc.on('end', () => resolve(Buffer.concat(buffers)));
     doc.on('error', reject);
 
-    const clienteObj = clientes.find(c => c.nombre === pedido.cliente) || {};
+    const clienteObj = clientes.find(c => c.id === pedido.clienteId) || clientes.find(c => c.nombre === pedido.cliente) || {};
     const items = pedido.items || [];
     const subtotal = items.reduce((s, it) => s + (it.precio||0)*(it.cantidad||1), 0);
     const descuento = pedido.descuento || 0;
-    const base = subtotal - descuento;
+    const base = Math.max(0, subtotal - descuento);
     const iva = pedido.iva ? Math.round(base * 0.19) : 0;
     const total = base + iva;
     const fmt = n => '$ ' + new Intl.NumberFormat('es-CL').format(Math.round(n));
@@ -20,7 +20,7 @@ module.exports = function generarPDF(pedido, clientes) {
     const W = 515;
 
     // Header
-    doc.fontSize(18).font('Helvetica-Bold').fillColor('#1a3a5c').text('Pro Ventas Magic', 40, 40);
+    doc.fontSize(18).font('Helvetica-Bold').fillColor('#1a3a5c').text(negocio.nombre || 'Pro Ventas Magic', 40, 40);
     doc.fontSize(10).font('Helvetica').fillColor('#666').text('Sistema de Gestión de Ventas', 40, 62);
 
     // Barra naranja
@@ -54,6 +54,7 @@ module.exports = function generarPDF(pedido, clientes) {
     y += 20;
 
     items.forEach((it, i) => {
+      if (y > 740) { doc.addPage(); y = 40; }
       const h = 24;
       if (i % 2 === 0) doc.rect(40, y, W, h).fill('#f8f9fa');
       doc.fontSize(9).font('Helvetica').fillColor('#222');
@@ -65,6 +66,7 @@ module.exports = function generarPDF(pedido, clientes) {
     });
 
     // Totales
+    if (y > 700) { doc.addPage(); y = 40; }
     y += 10;
     doc.rect(40, y, W, 1).fill('#ddd');
     y += 10;
@@ -79,6 +81,7 @@ module.exports = function generarPDF(pedido, clientes) {
 
     if (pedido.observacion) {
       y += 30;
+      if (y > 700) { doc.addPage(); y = 40; }
       doc.rect(40, y, W, 1).fill('#ddd'); y+=8;
       doc.fontSize(9).font('Helvetica-Bold').fillColor('#333').text('Observación:', 40, y);
       doc.font('Helvetica').text(pedido.observacion, 40, y+14, { width: W });
