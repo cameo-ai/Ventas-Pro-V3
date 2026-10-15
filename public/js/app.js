@@ -335,10 +335,8 @@ function initNuevoPedido() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('ped-fecha').value = today;
   document.getElementById('ped-tipo').value = 'Pedido';
-  pedidoClienteSeleccionado = null;
-  document.getElementById('ped-cliente-label').textContent = 'Seleccionar Cliente';
-  document.getElementById('ped-cliente-label').style.color = '#9ca3af';
-  pedidoActual.items = {};
+  pedidoClienteSeleccionado = { id: null, nombre: 'Venta directa' };
+  continuarPedido();
 }
 
 function continuarPedido() {
@@ -754,20 +752,72 @@ function agregarProductoPedido(pid) {
   recalcularTotal();
 }
 function renderProductosAgregados() {
-  const c = document.getElementById('pedido-productos-agregados');
-  c.innerHTML = Object.keys(pedidoV2.productos).map(pid => {
-    const p = productos.find(x => x.id === pid); if (!p) return '';
-    const qty = pedidoV2.productos[pid];
-    return `<div class="pedido-item-agregado">
-      <div class="item-name">${p.nombre}</div>
-      <div class="item-price">${fmtNum(p.precio)}</div>
-      <div class="pedido-qty-ctrl">
-        <button onclick="cambiarQtyV2('prod','${pid}',-1)">−</button>
-        <span>${qty}</span>
-        <button class="plus" onclick="cambiarQtyV2('prod','${pid}',1)">+</button>
-      </div>
-    </div>`;
-  }).join('');
+  var c = document.getElementById('pedido-productos-agregados');
+  if (!c) return;
+  c.innerHTML = '';
+  var ids = Object.keys(pedidoV2.productos);
+  if (!ids.length) return;
+  var grid = document.createElement('div');
+  grid.className = 'venta-grid';
+  ids.forEach(function(pid) {
+    var p = productos.find(function(x) { return x.id === pid; });
+    if (!p) return;
+    var qty = pedidoV2.productos[pid];
+    var tile = document.createElement('div');
+    tile.className = 'venta-tile';
+    var badge = document.createElement('div');
+    badge.className = 'venta-tile-qty';
+    badge.textContent = 'x' + qty;
+    tile.appendChild(badge);
+    if (p.imagen) {
+      var img = document.createElement('img');
+      img.className = 'venta-tile-img';
+      img.src = p.imagen;
+      tile.appendChild(img);
+    } else {
+      var icon = document.createElement('div');
+      icon.className = 'venta-tile-icon';
+      icon.textContent = '\u{1F4E6}';
+      tile.appendChild(icon);
+    }
+    var info = document.createElement('div');
+    info.className = 'venta-tile-info';
+    var nombreEl = document.createElement('div');
+    nombreEl.className = 'venta-tile-name';
+    nombreEl.textContent = p.nombre;
+    var precioEl = document.createElement('div');
+    precioEl.className = 'venta-tile-price';
+    precioEl.textContent = fmtNum(p.precio);
+    info.appendChild(nombreEl);
+    info.appendChild(precioEl);
+    tile.appendChild(info);
+    var btns = document.createElement('div');
+    btns.className = 'venta-tile-btns';
+    var btnMenos = document.createElement('button');
+    btnMenos.type = 'button';
+    btnMenos.className = 'menos';
+    btnMenos.textContent = String.fromCharCode(8722);
+    btnMenos.addEventListener('click', function(){
+      pedidoV2.productos[pid] = (pedidoV2.productos[pid] || 0) - 1;
+      if (pedidoV2.productos[pid] <= 0) delete pedidoV2.productos[pid];
+      renderProductosAgregados();
+      recalcularTotal();
+    });
+    var btnMas = document.createElement('button');
+    btnMas.type = 'button';
+    btnMas.className = 'mas';
+    btnMas.textContent = '+';
+    btnMas.addEventListener('click', function(){
+      pedidoV2.productos[pid] = (pedidoV2.productos[pid] || 0) + 1;
+      renderProductosAgregados();
+      recalcularTotal();
+    });
+    btns.appendChild(btnMenos);
+    btns.appendChild(btnMas);
+    tile.appendChild(btns);
+    grid.appendChild(tile);
+  });
+  c.appendChild(grid);
 }
 
 // --- Servicio picker ---
