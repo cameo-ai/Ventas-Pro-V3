@@ -1940,3 +1940,48 @@ async function loadDashboardNegocio() {
     }
   } catch(e) {}
 }
+
+// ==================== BOTON FLOTANTE "VENTAS" ====================
+(function () {
+  function crearBotonVentas() {
+    if (document.getElementById('btn-ventas-rapidas')) return;
+    var btn = document.createElement('button');
+    btn.id = 'btn-ventas-rapidas';
+    btn.type = 'button';
+    btn.textContent = 'Ventas';
+    btn.style.position = 'fixed';
+    btn.style.bottom = '90px';
+    btn.style.right = '20px';
+    btn.style.zIndex = '999';
+    btn.style.background = '#10b981';
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '30px';
+    btn.style.padding = '14px 22px';
+    btn.style.fontSize = '15px';
+    btn.style.fontWeight = '700';
+    btn.style.boxShadow = '0 4px 14px rgba(0,0,0,.3)';
+    btn.style.cursor = 'pointer';
+    btn.addEventListener('click', function () {
+      navigate('nuevo-pedido');
+    });
+    document.body.appendChild(btn);
+  }
+
+  function actualizarVisibilidadBotonVentas() {
+    var btn = document.getElementById('btn-ventas-rapidas');
+    if (!btn) return;
+    var pedidoItems = document.getElementById('page-pedido-items');
+    var enVenta = !!(pedidoItems && pedidoItems.classList.contains('active'));
+    btn.style.display = enVenta ? 'none' : 'block';
+  }
+
+  crearBotonVentas();
+  actualizarVisibilidadBotonVentas();
+
+  var navOriginal = window.navigate;
+  window.navigate = function (page) {
+    navOriginal(page);
+    actualizarVisibilidadBotonVentas();
+  };
+})();
