@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro Ventas Magic</title>
+  <title>Mi Negocio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,10 +24,10 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo">
-          <div class="logo-icon"><i class="fa-solid fa-grip"></i></div>
+          <div class="logo-icon" id="dashboard-logo"><i class="fa-solid fa-grip"></i></div>
           <div class="logo-text">
             <div class="logo-sub">Bienvenido de nuevo,</div>
-            <div class="logo-title">Pro Ventas Magic</div>
+            <div class="logo-title">Mi Negocio</div>
           </div>
         </div>
         <div class="sidebar-actions">
@@ -60,10 +60,10 @@
     <main class="main-content">
       <header class="topbar">
         <div class="topbar-left">
-          <div class="logo-icon-sm"><i class="fa-solid fa-grip"></i></div>
+          <div class="logo-icon-sm" id="dashboard-logo-sm"><i class="fa-solid fa-grip"></i></div>
           <div>
             <div class="logo-sub-sm">Bienvenido de nuevo,</div>
-            <div class="logo-title-sm">Pro Ventas Magic</div>
+            <div class="logo-title-sm">Mi Negocio</div>
           </div>
         </div>
         <div class="topbar-actions">
@@ -237,6 +237,31 @@
         </div>
 
         <!-- NUEVO CLIENTE -->
+        <!-- DETALLE CLIENTE -->
+        <div class="page" id="page-detalle-cliente">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('clientes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2 id="dc-nombre-titulo">Cliente</h2>
+          </div>
+          <div class="subpage-body form-body">
+            <input type="hidden" id="dc-id">
+            <div class="form-field-group"><label>Nombre</label><input type="text" id="dc-nombre" placeholder="Nombre del cliente"></div>
+            <div class="form-field-group"><label>Teléfono 1</label><input type="tel" id="dc-tel1" placeholder="Teléfono 1"></div>
+            <div class="form-field-group"><label>Teléfono 2</label><input type="tel" id="dc-tel2" placeholder="Teléfono 2"></div>
+            <div class="form-field-group"><label>Nombre Contacto</label><input type="text" id="dc-contacto" placeholder="Nombre Contacto"></div>
+            <div class="form-field-group"><label>E-mail</label><input type="email" id="dc-email" placeholder="Email"></div>
+            <div class="form-field-group"><label>Documento de identificación</label><input type="text" id="dc-documento" placeholder="RUT / DNI"></div>
+            <div class="form-field-group"><label>Dirección</label><input type="text" id="dc-direccion" placeholder="Dirección"></div>
+            <div class="form-field-group"><label>Fecha de Cumpleaños</label>
+              <div style="display:flex;gap:8px">
+                <select id="dc-dia"><option value="">Día</option></select>
+                <select id="dc-mes"><option value="">Mes</option></select>
+              </div>
+            </div>
+            <div class="form-field-group"><label>Nota</label><textarea id="dc-nota" rows="3" placeholder="Nota"></textarea></div>
+            <button class="fab-save" onclick="actualizarCliente()"><i class="fa-solid fa-save"></i> Actualizar</button>
+          </div>
+        </div>
         <div class="page" id="page-nuevo-cliente">
           <div class="subpage-header">
             <button class="back-btn" onclick="navigate('clientes')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -261,9 +286,9 @@
               </div>
             </div>
             <div class="form-field-group">
-              <label>Teléfono 3</label>
+              <label>Nombre Contacto</label>
               <div class="input-with-icons">
-                <input type="tel" id="nc-tel3" placeholder="Teléfono">
+                <input type="text" id="nc-contacto" placeholder="Nombre Contacto">
                 <i class="fa-solid fa-phone field-icon"></i>
                 <i class="fa-brands fa-whatsapp field-icon" style="color:#25D366"></i>
               </div>
@@ -711,7 +736,7 @@
             <div class="settings-profile-card">
               <div class="settings-avatar" id="settings-avatar">JP</div>
               <div>
-                <div class="settings-username" id="settings-username">Juan Pérez</div>
+                <div class="settings-username" id="settings-username">Mi Negocio</div>
                 <div class="settings-role">ADMINISTRADOR</div>
               </div>
             </div>
@@ -1063,9 +1088,9 @@
   <div class="modal-overlay" id="modal-perfil" onclick="closeModalOutside(event,'modal-perfil')">
     <div class="modal">
       <div class="modal-header"><h3>Perfil de usuario</h3><button onclick="closeModal('modal-perfil')"><i class="fa-solid fa-xmark"></i></button></div>
-      <div class="form-field-group"><label>Nombre</label><input type="text" id="perfil-nombre" placeholder="Tu nombre" value="Juan Pérez"></div>
+      <div class="form-field-group"><label>Nombre</label><input type="text" id="perfil-nombre" placeholder="Tu nombre" value="Mi Negocio"></div>
       <div class="form-field-group"><label>Email</label><input type="email" id="perfil-email" placeholder="email@ejemplo.com"></div>
-      <div class="form-field-group"><label>Empresa</label><input type="text" id="perfil-empresa" placeholder="Nombre empresa" value="Pro Ventas Magic"></div>
+      <div class="form-field-group"><label>Empresa</label><input type="text" id="perfil-empresa" placeholder="Nombre empresa" value="Mi Negocio"></div>
       <button class="fab-save" style="position:relative;border-radius:12px;margin-top:12px" onclick="guardarPerfil()">Guardar</button>
     </div>
   </div>
@@ -1147,7 +1172,7 @@
   </div>
 
   <div class="toast" id="toast"></div>
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js?v=10"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').then(() => console.log('SW registrado'));

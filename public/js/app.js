@@ -235,7 +235,7 @@ function renderClientes(lista) {
     return;
   }
   container.innerHTML = arr.map(c => `
-    <div class="item-card">
+    <div class="item-card" onclick="verDetalleCliente('${c.id}')" style="cursor:pointer">
       <div class="item-thumb-placeholder" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white;font-size:18px;font-weight:800">
         ${c.nombre.charAt(0).toUpperCase()}
       </div>
@@ -244,7 +244,7 @@ function renderClientes(lista) {
         <div class="item-sub">${c.telefono1 || c.telefono || ''}</div>
       </div>
       <div class="item-actions">
-        <button class="btn-del" onclick="eliminarCliente('${c.id}')"><i class="fa-solid fa-trash"></i></button>
+        <button class="btn-del" onclick="event.stopPropagation();eliminarCliente('${c.id}')"><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
   `).join('');
@@ -260,7 +260,7 @@ async function guardarNuevoCliente() {
   if (!nombre) return showToast('El nombre es requerido', 'error');
   const telefono1 = document.getElementById('nc-tel1').value.trim();
   const telefono2 = document.getElementById('nc-tel2').value.trim();
-  const telefono3 = document.getElementById('nc-tel3').value.trim();
+  const contacto = document.getElementById('nc-contacto').value.trim();
   const email = document.getElementById('nc-email').value.trim();
   const documento = document.getElementById('nc-documento').value.trim();
   const direccion = document.getElementById('nc-direccion').value.trim();
@@ -269,13 +269,13 @@ async function guardarNuevoCliente() {
   const nota = document.getElementById('nc-nota').value.trim();
 
   const c = await api('POST', '/clientes', {
-    nombre, telefono1, telefono2, telefono3, email,
+    nombre, telefono1, telefono2, contacto, email,
     documento, direccion, cumpleanos: dia && mes ? `${dia}/${mes}` : '',
     nota, totalCompras: 0
   });
   clientes.push(c);
   showToast('Cliente guardado', 'success');
-  ['nc-nombre','nc-tel1','nc-tel2','nc-tel3','nc-email','nc-documento','nc-direccion','nc-nota'].forEach(id => {
+  ['nc-nombre','nc-tel1','nc-tel2','nc-contacto','nc-email','nc-documento','nc-direccion','nc-nota'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   navigate('clientes');
@@ -675,12 +675,16 @@ function getIcon(categoria) {
 }
 
 // ==================== INIT ====================
+
+var negocioGlobal = {};
+
 async function init() {
-  setTheme(localStorage.getItem('theme') || 'dark');
-  const today = new Date().toISOString().split('T')[0];
-  ['i-fecha','g-fecha'].forEach(id => { const el = document.getElementById(id); if(el) el.value = today; });
+  setTheme(localStorage.getItem("theme") || "dark");
+  var today = new Date().toISOString().split("T")[0];
+  ["i-fecha","g-fecha"].forEach(function(id) { var el = document.getElementById(id); if(el) el.value = today; });
   await loadAll();
-  navigate('inicio');
+  loadDashboardNegocio();
+  navigate("inicio");
 }
 
 init();
@@ -1339,7 +1343,7 @@ async function actualizarPedido() {
   showToast('Pedido actualizado', 'success');
 }
 
-function generarDocumento() {
+async function generarDocumento() {
   if (!pedidoEditando) return;
   const p = pedidoEditando;
 
@@ -1378,7 +1382,7 @@ function generarDocumento() {
   }).join('');
 
   // Obtener perfil guardado
-  const empresa = document.getElementById('perfil-empresa')?.value || 'Pro Ventas Magic';
+  const empresa = negocioGlobal.nombre || "Mi Negocio"; const logoUrl = negocioGlobal.logo || "";
   const nombreUsuario = document.getElementById('perfil-nombre')?.value || '';
 
   const html = `<!DOCTYPE html>
@@ -1424,7 +1428,7 @@ function generarDocumento() {
   <div class="doc">
     <div class="header">
       <div class="logo-area">
-        <div class="logo-empresa">🏢 ${empresa}</div>
+        <div class="logo-empresa">${logoUrl ? '<img src="' + logoUrl + '" style="height:50px;object-fit:contain">' : empresa}</div>
         ${nombreUsuario ? `<div class="logo-sub">${nombreUsuario}</div>` : ''}
       </div>
       <div class="header-info">
@@ -1795,4 +1799,94 @@ async function subirFirma() {
     showToast('Firma guardada', 'success');
   };
   reader.readAsDataURL(file);
+}
+
+// ==================== DETALLE CLIENTE ====================
+function verDetalleCliente(id) {
+  const c = clientes.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('dc-id').value = c.id;
+  document.getElementById('dc-nombre').value = c.nombre || '';
+  document.getElementById('dc-nombre-titulo').textContent = c.nombre || 'Cliente';
+  document.getElementById('dc-tel1').value = c.telefono1 || c.telefono || '';
+  document.getElementById('dc-tel2').value = c.telefono2 || '';
+  document.getElementById('dc-contacto').value = c.contacto || '';
+  document.getElementById('dc-email').value = c.email || '';
+  document.getElementById('dc-documento').value = c.documento || '';
+  document.getElementById('dc-direccion').value = c.direccion || '';
+  document.getElementById('dc-nota').value = c.nota || '';
+  const dcDia = document.getElementById('dc-dia');
+  const dcMes = document.getElementById('dc-mes');
+  dcDia.innerHTML = '<option value="">Día</option>';
+  dcMes.innerHTML = '<option value="">Mes</option>';
+  for (let i = 1; i <= 31; i++) dcDia.innerHTML += '<option value="'+i+'">'+i+'</option>';
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  meses.forEach(function(m, i) { dcMes.innerHTML += '<option value="'+(i+1)+'">'+m+'</option>'; });
+  if (c.cumpleanos) {
+    var parts = c.cumpleanos.split('/');
+    if (parts.length === 2) { dcDia.value = parts[0]; dcMes.value = parts[1]; }
+  } else if (c.dia && c.mes) {
+    dcDia.value = c.dia; dcMes.value = c.mes;
+  }
+  navigate('detalle-cliente');
+}
+
+async function actualizarCliente() {
+  var id = document.getElementById('dc-id').value;
+  var nombre = document.getElementById('dc-nombre').value.trim();
+  if (!nombre) return showToast('El nombre es requerido', 'error');
+  var data = {
+    nombre: nombre,
+    telefono1: document.getElementById('dc-tel1').value.trim(),
+    telefono2: document.getElementById('dc-tel2').value.trim(),
+    contacto: document.getElementById('dc-contacto').value.trim(),
+    email: document.getElementById('dc-email').value.trim(),
+    documento: document.getElementById('dc-documento').value.trim(),
+    direccion: document.getElementById('dc-direccion').value.trim(),
+    nota: document.getElementById('dc-nota').value.trim(),
+    dia: document.getElementById('dc-dia').value,
+    mes: document.getElementById('dc-mes').value,
+    cumpleanos: ''
+  };
+  if (data.dia && data.mes) data.cumpleanos = data.dia + '/' + data.mes;
+  var c = await api('PUT', '/clientes/' + id, data);
+  var idx = clientes.findIndex(function(x) { return x.id === id; });
+  if (idx >= 0) clientes[idx] = c;
+  showToast('Cliente actualizado', 'success');
+  navigate('clientes');
+}
+
+async function loadDashboardNegocio() {
+  try {
+    var r = await api('GET', '/config/negocio');
+    if (r) {
+      if (r.nombre) {
+        var el1 = document.querySelector('.logo-title');
+        var el2 = document.querySelector('.logo-title-sm');
+        if (el1) el1.textContent = r.nombre;
+        if (el2) el2.textContent = r.nombre;
+        var un = document.getElementById('settings-username');
+        if (un) un.textContent = r.nombre;
+        negocioGlobal = r;
+      }
+      if (r.logo) {
+        var icon1 = document.getElementById('dashboard-logo');
+        var icon2 = document.getElementById('dashboard-logo-sm');
+        if (icon1) {
+          icon1.innerHTML = '';
+          var img = document.createElement('img');
+          img.src = r.logo;
+          img.style.cssText = 'width:48px;height:48px;border-radius:12px;object-fit:cover';
+          icon1.appendChild(img);
+        }
+        if (icon2) {
+          icon2.innerHTML = '';
+          var img2 = document.createElement('img');
+          img2.src = r.logo;
+          img2.style.cssText = 'width:32px;height:32px;border-radius:8px;object-fit:cover';
+          icon2.appendChild(img2);
+        }
+      }
+    }
+  } catch(e) {}
 }

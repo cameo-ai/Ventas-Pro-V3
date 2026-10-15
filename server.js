@@ -27,7 +27,7 @@ db.exec(`
   );
   CREATE TABLE IF NOT EXISTS clientes (
     id TEXT PRIMARY KEY, nombre TEXT NOT NULL, email TEXT DEFAULT '',
-    telefono TEXT DEFAULT '', telefono2 TEXT DEFAULT '', telefono3 TEXT DEFAULT '',
+    telefono TEXT DEFAULT '', telefono2 TEXT DEFAULT '', contacto TEXT DEFAULT '',
     documento TEXT DEFAULT '', direccion TEXT DEFAULT '', nota TEXT DEFAULT '',
     dia TEXT DEFAULT '', mes TEXT DEFAULT '', totalCompras REAL DEFAULT 0,
     creado TEXT DEFAULT (datetime('now'))
@@ -153,15 +153,15 @@ app.delete('/api/productos/:id', (req, res) => { db.prepare('DELETE FROM product
 app.get('/api/clientes', (req, res) => res.json(db.prepare('SELECT * FROM clientes ORDER BY nombre').all()));
 app.post('/api/clientes', (req, res) => {
   const id = uuidv4();
-  const c = { id, nombre:'', email:'', telefono:'', telefono2:'', telefono3:'', documento:'', direccion:'', nota:'', dia:'', mes:'', totalCompras:0, ...req.body };
-  db.prepare(`INSERT INTO clientes (id,nombre,email,telefono,telefono2,telefono3,documento,direccion,nota,dia,mes,totalCompras) VALUES (@id,@nombre,@email,@telefono,@telefono2,@telefono3,@documento,@direccion,@nota,@dia,@mes,@totalCompras)`).run(c);
+  const c = { id, nombre:'', email:'', telefono:'', telefono2:'', contacto:'', documento:'', direccion:'', nota:'', dia:'', mes:'', totalCompras:0, ...req.body };
+  db.prepare(`INSERT INTO clientes (id,nombre,email,telefono,telefono2,contacto,documento,direccion,nota,dia,mes,totalCompras) VALUES (@id,@nombre,@email,@telefono,@telefono2,@contacto,@documento,@direccion,@nota,@dia,@mes,@totalCompras)`).run(c);
   res.json(db.prepare('SELECT * FROM clientes WHERE id=?').get(id));
 });
 app.put('/api/clientes/:id', (req, res) => {
   const ex = db.prepare('SELECT * FROM clientes WHERE id=?').get(req.params.id);
   if (!ex) return res.status(404).json({ error: 'No encontrado' });
   const c = { ...ex, ...req.body, id: req.params.id };
-  db.prepare(`UPDATE clientes SET nombre=@nombre,email=@email,telefono=@telefono,telefono2=@telefono2,telefono3=@telefono3,documento=@documento,direccion=@direccion,nota=@nota,dia=@dia,mes=@mes,totalCompras=@totalCompras WHERE id=@id`).run(c);
+  db.prepare(`UPDATE clientes SET nombre=@nombre,email=@email,telefono=@telefono,telefono2=@telefono2,contacto=@contacto,documento=@documento,direccion=@direccion,nota=@nota,dia=@dia,mes=@mes,totalCompras=@totalCompras WHERE id=@id`).run(c);
   res.json(db.prepare('SELECT * FROM clientes WHERE id=?').get(req.params.id));
 });
 app.delete('/api/clientes/all', (req, res) => { db.prepare('DELETE FROM clientes').run(); res.json({ success: true }); });
