@@ -1,4 +1,5 @@
-require('dotenv').config();
+// Busca el .env junto a server.js; si no está, usa la ruta antigua de este servidor
+require('dotenv').config({ path: [require('path').join(__dirname, '.env'), '/mnt/ssd/proventas/app/.env'], quiet: true });
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -114,12 +115,12 @@ function getSessionSecret() {
   if (!fs.existsSync(f)) fs.writeFileSync(f, require('crypto').randomBytes(32).toString('hex'), { mode: 0o600 });
   return fs.readFileSync(f, 'utf8').trim();
 }
-app.set('trust proxy', 1); // Railway termina el HTTPS delante de la app
+if (process.env.TRUST_PROXY === '1') app.set('trust proxy', 1); // solo si hay un proxy delante (Nginx, Railway...)
 app.use(session({
   secret: getSessionSecret(),
   resave: false,
   saveUninitialized: false,
-  cookie: { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', maxAge: 1000 * 60 * 60 * 8 }
+  cookie: { httpOnly: true, sameSite: 'lax', secure: process.env.COOKIE_SECURE === 'true', maxAge: 1000 * 60 * 60 * 8 }
 }));
 // Máximo 10 intentos fallidos de login por IP cada 15 minutos
 const VENTANA_LOGIN = 15 * 60 * 1000;
