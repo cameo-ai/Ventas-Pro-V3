@@ -33,7 +33,7 @@
     var p = pagina();
     if (!p) return null;
     var bs = p.querySelectorAll('button');
-    for (var i = 0; i < bs.length; i++) if (bs[i].textContent.trim() === 'Guardar') return bs[i];
+    for (var i = 0; i < bs.length; i++) if (bs[i].classList.contains('fab-save')) return bs[i];
     return null;
   }
 
