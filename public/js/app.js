@@ -588,7 +588,7 @@ async function eliminarGasto(id) {
 
 let chartVentas = null, chartEstados = null, chartProductos = null;
 async function renderInformes() {
-  const totalIngresos = ingresos.reduce((s, i) => s + Number(i.monto), 0);
+  const totalIngresos = (typeof pedidos !== 'undefined' ? pedidos : []).reduce((s, p) => s + (Number(p.total) || 0), 0);
   const totalGastos = gastos.reduce((s, g) => s + Number(g.monto), 0);
   const ganancia = totalIngresos - totalGastos;
   document.getElementById('stats-grid').innerHTML = `

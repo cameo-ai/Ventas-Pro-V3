@@ -384,5 +384,24 @@
     });
   }
 
+  // Pantalla Productos de la app: el botón rojo del código de barras busca con la cámara
+  window.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest && e.target.closest('#page-productos .barcode-btn');
+    if (!b || !ES_APP) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    escanear().then(function (cod) {
+      if (!cod) return;
+      var p = lista().find(function (x) { return mismoCodigo(x.barcode, cod) || mismoCodigo(x.codigo, cod); });
+      var f = document.getElementById('filtro-productos');
+      if (p) {
+        if (f) { f.value = p.nombre; try { if (typeof filtrarProductos === 'function') filtrarProductos(); } catch (er) {} }
+        aviso('Encontrado: ' + p.nombre, 'success');
+      } else if (confirm('El código ' + cod + ' no está registrado. ¿Registrarlo ahora?')) {
+        abrirForm(null, cod);
+      }
+    }).catch(falloScan);
+  }, true);
+
   window.IngresoProductos = { abrir: abrirLista, nuevo: function (cod) { abrirForm(null, cod || ''); } };
 })();
