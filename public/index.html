@@ -78,19 +78,11 @@
         <div class="page active" id="page-inicio">
           <div class="page-content">
             <section class="section">
-              <div class="section-title">REGISTRO</div>
-              <div class="card-grid three">
-                <div class="module-card" data-page="nuevo-pedido"><div class="card-icon"><i class="fa-solid fa-file-circle-plus"></i></div><span>Nuevo Pedido</span></div>
-                <div class="module-card" data-page="pedidos"><div class="card-icon"><i class="fa-solid fa-bag-shopping"></i></div><span>Pedidos</span></div>
-                <div class="module-card" data-page="clientes"><div class="card-icon"><i class="fa-solid fa-users"></i></div><span>Clientes</span></div>
-              </div>
-            </section>
-            <section class="section">
               <div class="section-title">MÓDULOS</div>
               <div class="card-grid three">
                 <div class="module-card" data-page="informes"><div class="card-icon"><i class="fa-solid fa-chart-bar"></i></div><span>Informes</span></div>
                 <div class="module-card" data-page="productos"><div class="card-icon"><i class="fa-solid fa-cube"></i></div><span>Productos</span></div>
-                <div class="module-card" data-page="servicios"><div class="card-icon"><i class="fa-solid fa-wrench"></i></div><span>Servicios</span></div>
+                <div class="module-card" data-page="pedidos"><div class="card-icon"><i class="fa-solid fa-bag-shopping"></i></div><span>Pedidos</span></div>
                 <div class="module-card" data-page="ajustes"><div class="card-icon"><i class="fa-solid fa-gear"></i></div><span>Ajustes</span></div>
                 <div class="module-card" data-page="ingresos"><div class="card-icon"><i class="fa-solid fa-piggy-bank"></i></div><span>Ingresos</span></div>
                 <div class="module-card" data-page="gastos"><div class="card-icon"><i class="fa-solid fa-credit-card"></i></div><span>Gastos</span></div>
@@ -99,6 +91,7 @@
             <section class="section">
               <div class="module-card wide" data-page="catalogo"><div class="card-icon"><i class="fa-solid fa-book-open"></i></div><span>Catálogo de productos</span></div>
             </section>
+            <div id="ventas-home-slot" style="text-align:center;margin:28px 0 12px"></div>
           </div>
         </div>
 
@@ -1181,5 +1174,6 @@
       navigator.serviceWorker.register('/sw.js').then(() => console.log('SW registrado'));
     }
   </script>
+<script src="/js/inicio.js?v=1"></script>
 </body>
 </html>
