@@ -306,14 +306,39 @@
     if (!p) setTimeout(function () { try { document.getElementById('ip-nombre').focus(); } catch (e) {} }, 150);
   }
 
+  function comprimir(dataUrl, max, calidad) {
+    return new Promise(function (ok, mal) {
+      var img = new Image();
+      img.onload = function () {
+        var esc = Math.min(1, max / Math.max(img.width, img.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(img.width * esc);
+        c.height = Math.round(img.height * esc);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { b ? ok(b) : mal(new Error('no se pudo procesar la foto')); }, 'image/jpeg', calidad);
+      };
+      img.onerror = function () { mal(new Error('formato de foto no soportado')); };
+      img.src = dataUrl;
+    });
+  }
+
   function subirFoto() {
     if (!fotoArchivo) return Promise.resolve(editando ? (editando.imagen || '') : '');
-    var fd = new FormData();
-    fd.append('imagen', fotoArchivo);
-    return fetch('/api/upload', { method: 'POST', body: fd, credentials: 'same-origin' })
-      .then(function (r) { return r.json(); })
-      .then(function (d) { return (d && d.url) || ''; })
-      .catch(function () { aviso('No se pudo subir la foto; se guarda sin foto', 'error'); return editando ? (editando.imagen || '') : ''; });
+    return comprimir(fotoUrl, 1200, 0.82).then(function (blob) {
+      var fd = new FormData();
+      fd.append('imagen', blob, 'producto-' + Date.now() + '.jpg');
+      return fetch('/api/upload', { method: 'POST', body: fd, credentials: 'same-origin' });
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var d = {};
+        try { d = JSON.parse(t); } catch (e) {}
+        if (!r.ok || !d.url) throw new Error(d.error || ('el servidor respondió ' + r.status));
+        return d.url;
+      });
+    }).catch(function (e) {
+      aviso('La foto no se pudo subir (' + e.message + '); se guarda sin foto', 'error');
+      return editando ? (editando.imagen || '') : '';
+    });
   }
 
   function guardar() {
