@@ -5,3 +5,15 @@ data/
 public/uploads/*
 !public/uploads/.gitkeep
 .env
+
+# copias de seguridad locales
+*.bak
+*.bak-*
+*.v[0-9]*.bak
+auth.js.sin-cambios
+
+# copias de seguridad locales
+*.bak
+*.bak-*
+*.v[0-9]*.bak
+auth.js.sin-cambios

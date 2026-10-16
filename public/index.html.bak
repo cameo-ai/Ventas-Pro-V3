@@ -3,12 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro Ventas Magic</title>
+  <title>Mi Negocio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="/chart.js"></script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#3b5bdb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ProVentas">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
   <div class="app">
@@ -17,10 +24,10 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo">
-          <div class="logo-icon"><i class="fa-solid fa-grip"></i></div>
+          <div class="logo-icon" id="dashboard-logo"><i class="fa-solid fa-grip"></i></div>
           <div class="logo-text">
             <div class="logo-sub">Bienvenido de nuevo,</div>
-            <div class="logo-title">Pro Ventas Magic</div>
+            <div class="logo-title">Mi Negocio</div>
           </div>
         </div>
         <div class="sidebar-actions">
@@ -53,10 +60,10 @@
     <main class="main-content">
       <header class="topbar">
         <div class="topbar-left">
-          <div class="logo-icon-sm"><i class="fa-solid fa-grip"></i></div>
+          <div class="logo-icon-sm" id="dashboard-logo-sm"><i class="fa-solid fa-grip"></i></div>
           <div>
             <div class="logo-sub-sm">Bienvenido de nuevo,</div>
-            <div class="logo-title-sm">Pro Ventas Magic</div>
+            <div class="logo-title-sm">Mi Negocio</div>
           </div>
         </div>
         <div class="topbar-actions">
@@ -230,6 +237,31 @@
         </div>
 
         <!-- NUEVO CLIENTE -->
+        <!-- DETALLE CLIENTE -->
+        <div class="page" id="page-detalle-cliente">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('clientes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2 id="dc-nombre-titulo">Cliente</h2>
+          </div>
+          <div class="subpage-body form-body">
+            <input type="hidden" id="dc-id">
+            <div class="form-field-group"><label>Nombre</label><input type="text" id="dc-nombre" placeholder="Nombre del cliente"></div>
+            <div class="form-field-group"><label>Teléfono 1</label><input type="tel" id="dc-tel1" placeholder="Teléfono 1"></div>
+            <div class="form-field-group"><label>Teléfono 2</label><input type="tel" id="dc-tel2" placeholder="Teléfono 2"></div>
+            <div class="form-field-group"><label>Nombre Contacto</label><input type="text" id="dc-contacto" placeholder="Nombre Contacto"></div>
+            <div class="form-field-group"><label>E-mail</label><input type="email" id="dc-email" placeholder="Email"></div>
+            <div class="form-field-group"><label>Documento de identificación</label><input type="text" id="dc-documento" placeholder="RUT / DNI"></div>
+            <div class="form-field-group"><label>Dirección</label><input type="text" id="dc-direccion" placeholder="Dirección"></div>
+            <div class="form-field-group"><label>Fecha de Cumpleaños</label>
+              <div style="display:flex;gap:8px">
+                <select id="dc-dia"><option value="">Día</option></select>
+                <select id="dc-mes"><option value="">Mes</option></select>
+              </div>
+            </div>
+            <div class="form-field-group"><label>Nota</label><textarea id="dc-nota" rows="3" placeholder="Nota"></textarea></div>
+            <button class="fab-save" onclick="actualizarCliente()"><i class="fa-solid fa-save"></i> Actualizar</button>
+          </div>
+        </div>
         <div class="page" id="page-nuevo-cliente">
           <div class="subpage-header">
             <button class="back-btn" onclick="navigate('clientes')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -254,9 +286,9 @@
               </div>
             </div>
             <div class="form-field-group">
-              <label>Teléfono 3</label>
+              <label>Nombre Contacto</label>
               <div class="input-with-icons">
-                <input type="tel" id="nc-tel3" placeholder="Teléfono">
+                <input type="text" id="nc-contacto" placeholder="Nombre Contacto">
                 <i class="fa-solid fa-phone field-icon"></i>
                 <i class="fa-brands fa-whatsapp field-icon" style="color:#25D366"></i>
               </div>
@@ -519,6 +551,9 @@
             <button class="btn-generar-doc" onclick="generarDocumento()">
               <i class="fa-solid fa-file-lines"></i> Generar Documento
             </button>
+            <button class="btn-generar-doc" onclick="enviarCorreoPedido()" style="background:#10b981;margin-top:8px">
+              <i class="fa-solid fa-envelope"></i> Enviar por Correo
+            </button>
 
             <!-- Fecha -->
             <div class="form-field-group">
@@ -625,6 +660,20 @@
           </div>
           <div class="subpage-body">
             <div class="stats-grid" id="stats-grid"></div>
+            <div style="padding:16px">
+              <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:16px">
+                <div style="font-weight:700;font-size:14px;margin-bottom:12px">Ventas por mes</div>
+                <canvas id="chart-ventas" height="200"></canvas>
+              </div>
+              <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:16px">
+                <div style="font-weight:700;font-size:14px;margin-bottom:12px">Pedidos por estado</div>
+                <canvas id="chart-estados" height="200"></canvas>
+              </div>
+              <div style="background:#fff;border-radius:16px;padding:16px;margin-bottom:16px">
+                <div style="font-weight:700;font-size:14px;margin-bottom:12px">Top 5 productos</div>
+                <canvas id="chart-productos" height="200"></canvas>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -687,8 +736,36 @@
             <div class="settings-profile-card">
               <div class="settings-avatar" id="settings-avatar">JP</div>
               <div>
-                <div class="settings-username" id="settings-username">Juan Pérez</div>
+                <div class="settings-username" id="settings-username">Mi Negocio</div>
                 <div class="settings-role">ADMINISTRADOR</div>
+              </div>
+            </div>
+
+            <!-- MI NEGOCIO -->
+            <div class="settings-section-label">MI NEGOCIO</div>
+            <div class="settings-group">
+              <div class="settings-row" onclick="navigate('mi-negocio')">
+                <div class="settings-row-icon" style="background:#e8f0fe"><i class="fa-solid fa-building" style="color:#3b5bdb"></i></div>
+                <span class="settings-row-label">Datos comerciales</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="navigate('mi-direccion')">
+                <div class="settings-row-icon" style="background:#e8f0fe"><i class="fa-solid fa-location-dot" style="color:#3b5bdb"></i></div>
+                <span class="settings-row-label">Dirección</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="navigate('mi-logo')">
+                <div class="settings-row-icon" style="background:#fef9e7"><i class="fa-solid fa-image" style="color:#f59e0b"></i></div>
+                <span class="settings-row-label">Logo</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="navigate('mi-firma')">
+                <div class="settings-row-icon" style="background:#e6f9f0"><i class="fa-solid fa-signature" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Firma</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
               </div>
             </div>
 
@@ -720,6 +797,24 @@
               <div class="settings-row" onclick="navigate('importar-productos')">
                 <div class="settings-row-icon" style="background:#e8f0fe"><i class="fa-solid fa-file-arrow-up" style="color:#3b5bdb"></i></div>
                 <span class="settings-row-label">Importar Productos (Excel)</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="window.location.href='/api/exportar/clientes'">
+                <div class="settings-row-icon" style="background:#e8f8f0"><i class="fa-solid fa-file-arrow-down" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Exportar Clientes (Excel)</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="window.location.href='/api/exportar/productos'">
+                <div class="settings-row-icon" style="background:#e8f8f0"><i class="fa-solid fa-file-arrow-down" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Exportar Productos (Excel)</span>
+                <i class="fa-solid fa-chevron-right settings-arrow"></i>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="settings-row" onclick="window.location.href='/api/exportar/pedidos'">
+                <div class="settings-row-icon" style="background:#e8f8f0"><i class="fa-solid fa-file-arrow-down" style="color:#10b981"></i></div>
+                <span class="settings-row-label">Exportar Pedidos (Excel)</span>
                 <i class="fa-solid fa-chevron-right settings-arrow"></i>
               </div>
               <div class="settings-divider"></div>
@@ -773,7 +868,7 @@
               <div class="settings-row">
                 <div class="settings-row-icon" style="background:#f1f5f9"><i class="fa-solid fa-mobile-screen" style="color:#64748b"></i></div>
                 <span class="settings-row-label">Versión de la app</span>
-                <span class="settings-row-value">1.0.4</span>
+                <span class="settings-row-value">2.0.0</span>
                 <i class="fa-solid fa-chevron-right settings-arrow"></i>
               </div>
               <div class="settings-divider"></div>
@@ -792,6 +887,71 @@
               </div>
             </div>
 
+          </div>
+        </div>
+
+        <!-- MI NEGOCIO - DATOS COMERCIALES -->
+        <div class="page" id="page-mi-negocio">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Datos comerciales</h2>
+          </div>
+          <div class="subpage-body" style="padding:16px">
+            <div class="form-field-group"><label>Nombre empresa</label><input type="text" id="neg-nombre" placeholder="Nombre de tu empresa"></div>
+            <div class="form-field-group"><label>RUT</label><input type="text" id="neg-rut" placeholder="76.000.000-0"></div>
+            <div class="form-field-group"><label>Teléfono</label><input type="text" id="neg-telefono" placeholder="+56 9 0000 0000"></div>
+            <div class="form-field-group"><label>E-mail</label><input type="email" id="neg-email" placeholder="correo@empresa.cl"></div>
+            <div class="form-field-group"><label>WhatsApp</label><input type="text" id="neg-whatsapp" placeholder="+56 9 0000 0000"></div>
+            <div class="form-field-group"><label>Instagram</label><input type="text" id="neg-instagram" placeholder="@tuempresa"></div>
+            <div class="form-field-group"><label>Sitio web</label><input type="text" id="neg-web" placeholder="www.tuempresa.cl"></div>
+            <button class="btn-primary" style="width:100%;margin-top:12px" onclick="guardarNegocio()">Actualizar</button>
+          </div>
+        </div>
+
+        <!-- MI NEGOCIO - DIRECCIÓN -->
+        <div class="page" id="page-mi-direccion">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Dirección</h2>
+          </div>
+          <div class="subpage-body" style="padding:16px">
+            <div class="form-field-group"><label>Dirección</label><input type="text" id="neg-direccion" placeholder="Av. Ejemplo 1234"></div>
+            <div class="form-field-group"><label>Ciudad</label><input type="text" id="neg-ciudad" placeholder="Santiago"></div>
+            <div class="form-field-group"><label>Región</label><input type="text" id="neg-region" placeholder="Región Metropolitana"></div>
+            <div class="form-field-group"><label>País</label><input type="text" id="neg-pais" placeholder="Chile"></div>
+            <button class="btn-primary" style="width:100%;margin-top:12px" onclick="guardarDireccion()">Actualizar</button>
+          </div>
+        </div>
+
+        <!-- MI NEGOCIO - LOGO -->
+        <div class="page" id="page-mi-logo">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Logo</h2>
+          </div>
+          <div class="subpage-body" style="padding:16px;text-align:center">
+            <div id="logo-preview" style="margin:16px auto;width:180px;height:120px;border:2px dashed #ccc;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+              <i class="fa-solid fa-image" style="font-size:48px;color:#ccc"></i>
+            </div>
+            <input type="file" id="logo-file" accept="image/*" style="display:none" onchange="previewLogo(this)">
+            <button class="btn-primary" style="width:100%;margin-top:12px" onclick="document.getElementById('logo-file').click()">Seleccionar imagen</button>
+            <button class="btn-primary" style="width:100%;margin-top:8px;background:#10b981" onclick="subirLogo()">Guardar Logo</button>
+          </div>
+        </div>
+
+        <!-- MI NEGOCIO - FIRMA -->
+        <div class="page" id="page-mi-firma">
+          <div class="subpage-header">
+            <button class="back-btn" onclick="navigate('ajustes')"><i class="fa-solid fa-arrow-left"></i></button>
+            <h2>Firma</h2>
+          </div>
+          <div class="subpage-body" style="padding:16px;text-align:center">
+            <div id="firma-preview" style="margin:16px auto;width:180px;height:120px;border:2px dashed #ccc;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden">
+              <i class="fa-solid fa-signature" style="font-size:48px;color:#ccc"></i>
+            </div>
+            <input type="file" id="firma-file" accept="image/*" style="display:none" onchange="previewFirma(this)">
+            <button class="btn-primary" style="width:100%;margin-top:12px" onclick="document.getElementById('firma-file').click()">Seleccionar imagen</button>
+            <button class="btn-primary" style="width:100%;margin-top:8px;background:#10b981" onclick="subirFirma()">Guardar Firma</button>
           </div>
         </div>
 
@@ -928,9 +1088,9 @@
   <div class="modal-overlay" id="modal-perfil" onclick="closeModalOutside(event,'modal-perfil')">
     <div class="modal">
       <div class="modal-header"><h3>Perfil de usuario</h3><button onclick="closeModal('modal-perfil')"><i class="fa-solid fa-xmark"></i></button></div>
-      <div class="form-field-group"><label>Nombre</label><input type="text" id="perfil-nombre" placeholder="Tu nombre" value="Juan Pérez"></div>
+      <div class="form-field-group"><label>Nombre</label><input type="text" id="perfil-nombre" placeholder="Tu nombre" value="Mi Negocio"></div>
       <div class="form-field-group"><label>Email</label><input type="email" id="perfil-email" placeholder="email@ejemplo.com"></div>
-      <div class="form-field-group"><label>Empresa</label><input type="text" id="perfil-empresa" placeholder="Nombre empresa" value="Pro Ventas Magic"></div>
+      <div class="form-field-group"><label>Empresa</label><input type="text" id="perfil-empresa" placeholder="Nombre empresa" value="Mi Negocio"></div>
       <button class="fab-save" style="position:relative;border-radius:12px;margin-top:12px" onclick="guardarPerfil()">Guardar</button>
     </div>
   </div>
@@ -960,12 +1120,14 @@
   <div class="modal-overlay" id="modal-pago-picker" onclick="closeModalOutside(event,'modal-pago-picker')">
     <div class="modal">
       <div class="modal-header"><h3>Forma de Pago</h3><button onclick="closeModal('modal-pago-picker')"><i class="fa-solid fa-xmark"></i></button></div>
-      <div class="item-list">
+      <div class="item-list" style="max-height:400px;overflow-y:auto">
         <div class="item-card" onclick="seleccionarPago('Efectivo')"><div class="item-info"><div class="item-name">&#x1F4B5; Efectivo</div></div></div>
         <div class="item-card" onclick="seleccionarPago('Transferencia')"><div class="item-info"><div class="item-name">&#x1F3E6; Transferencia</div></div></div>
         <div class="item-card" onclick="seleccionarPago('Tarjeta débito')"><div class="item-info"><div class="item-name">&#x1F4B3; Tarjeta débito</div></div></div>
         <div class="item-card" onclick="seleccionarPago('Tarjeta crédito')"><div class="item-info"><div class="item-name">&#x1F4B3; Tarjeta crédito</div></div></div>
         <div class="item-card" onclick="seleccionarPago('Cheque')"><div class="item-info"><div class="item-name">&#x1F4C4; Cheque</div></div></div>
+        <div class="item-card" onclick="seleccionarPago('Crédito (debe)')"><div class="item-info"><div class="item-name">&#x1F4CB; Crédito (debe)</div></div></div>
+        <div class="item-card" onclick="seleccionarPago('Cobra vendedor')"><div class="item-info"><div class="item-name">&#x1F9FE; Cobra vendedor</div></div></div>
       </div>
     </div>
   </div>
@@ -1010,6 +1172,11 @@
   </div>
 
   <div class="toast" id="toast"></div>
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js?v=10"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(() => console.log('SW registrado'));
+    }
+  </script>
 </body>
 </html>

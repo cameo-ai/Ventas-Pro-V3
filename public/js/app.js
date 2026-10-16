@@ -648,7 +648,7 @@ document.getElementById('themeToggleMobile').addEventListener('click', () => set
 
 // ==================== MODAL ====================
 function showModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModal(id) { var el = document.getElementById(id); if (el) el.classList.remove('open'); }
 function closeModalOutside(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
 
 // ==================== TOAST ====================
@@ -747,7 +747,7 @@ function filtrarPickerProducto() {
 }
 function agregarProductoPedido(pid) {
   pedidoV2.productos[pid] = (pedidoV2.productos[pid] || 0) + 1;
-  closeModal('modal-producto-picker');
+  if (document.getElementById('modal-producto-picker')) closeModal('modal-producto-picker');
   renderProductosAgregados();
   recalcularTotal();
 }
@@ -1983,5 +1983,219 @@ async function loadDashboardNegocio() {
   window.navigate = function (page) {
     navOriginal(page);
     actualizarVisibilidadBotonVentas();
+  };
+})();
+
+// ==================== BOTON Y MODAL DE ESCANER (camara) ====================
+(function () {
+  function crearModalScanner() {
+    if (document.getElementById('modal-scanner-camara')) return;
+    var overlay = document.createElement('div');
+    overlay.id = 'modal-scanner-camara';
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.background = '#fff';
+    overlay.style.zIndex = '2000';
+    overlay.style.display = 'none';
+    overlay.style.flexDirection = 'column';
+
+    var header = document.createElement('div');
+    header.style.display = 'flex';
+    header.style.alignItems = 'center';
+    header.style.justifyContent = 'space-between';
+    header.style.padding = '14px';
+    header.style.background = '#111';
+
+    var titulo = document.createElement('span');
+    titulo.textContent = 'Escanear producto';
+    titulo.style.color = '#fff';
+    titulo.style.fontWeight = '700';
+
+    var btnCerrar = document.createElement('button');
+    btnCerrar.type = 'button';
+    btnCerrar.textContent = 'Cerrar';
+    btnCerrar.style.background = '#ef4444';
+    btnCerrar.style.color = '#fff';
+    btnCerrar.style.border = 'none';
+    btnCerrar.style.borderRadius = '6px';
+    btnCerrar.style.padding = '8px 14px';
+    btnCerrar.style.cursor = 'pointer';
+    btnCerrar.addEventListener('click', function () {
+      window.cerrarScannerCamara();
+    });
+
+    header.appendChild(titulo);
+    header.appendChild(btnCerrar);
+
+    var video = document.createElement('div');
+    video.id = 'scanner-video';
+    video.style.height = '280px';
+    video.style.width = '100%';
+    video.style.background = '#000';
+
+    var estado = document.createElement('div');
+    estado.id = 'scanner-estado';
+    estado.style.color = '#111';
+    estado.style.textAlign = 'center';
+    estado.style.padding = '12px';
+    estado.style.fontSize = '14px';
+    estado.style.background = '#fff';
+    estado.textContent = 'Apunta la camara al codigo de barras';
+
+    overlay.appendChild(header);
+    overlay.appendChild(video);
+    overlay.appendChild(estado);
+    document.body.appendChild(overlay);
+  }
+
+  function crearBotonScanner() {
+    if (document.getElementById('btn-scanner-camara')) return;
+    var btn = document.createElement('button');
+    btn.id = 'btn-scanner-camara';
+    btn.type = 'button';
+    btn.textContent = 'Escanear';
+    btn.style.position = 'fixed';
+    btn.style.bottom = '160px';
+    btn.style.right = '20px';
+    btn.style.zIndex = '999';
+    btn.style.background = '#f97316';
+    btn.style.color = '#fff';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '30px';
+    btn.style.padding = '14px 22px';
+    btn.style.fontSize = '15px';
+    btn.style.fontWeight = '700';
+    btn.style.boxShadow = '0 4px 14px rgba(0,0,0,.3)';
+    btn.style.cursor = 'pointer';
+    btn.style.display = 'none';
+    btn.addEventListener('click', function () {
+      window.abrirScannerCamara();
+    });
+    document.body.appendChild(btn);
+  }
+
+  window.abrirScannerCamara = function () {
+    crearModalScanner();
+    document.getElementById('modal-scanner-camara').style.display = 'flex';
+  };
+
+  window.cerrarScannerCamara = function () {
+    var overlay = document.getElementById('modal-scanner-camara');
+    if (overlay) overlay.style.display = 'none';
+  };
+
+  function actualizarVisibilidadBotonScanner() {
+    var btn = document.getElementById('btn-scanner-camara');
+    if (!btn) return;
+    var pedidoItems = document.getElementById('page-pedido-items');
+    var enVenta = !!(pedidoItems && pedidoItems.classList.contains('active'));
+    btn.style.display = enVenta ? 'block' : 'none';
+  }
+
+  crearBotonScanner();
+  actualizarVisibilidadBotonScanner();
+
+  var navOriginal2 = window.navigate;
+  window.navigate = function (page) {
+    navOriginal2(page);
+    actualizarVisibilidadBotonScanner();
+  };
+})();
+
+// ==================== ESCANER DE CAMARA (logica) ====================
+(function () {
+  var html5QrInstance = null;
+  var ultimoCodigo = '';
+  var ultimoTiempo = 0;
+
+  function codigosCoinciden(a, b) {
+    if (!a || !b) return false;
+    var da = String(a).replace(/\D/g, '');
+    var db = String(b).replace(/\D/g, '');
+    if (!da || !db) return false;
+    if (da === db) return true;
+    if (da.length === db.length + 1 && da.slice(1) === db) return true;
+    if (db.length === da.length + 1 && db.slice(1) === da) return true;
+    return false;
+  }
+
+  function setEstadoScanner(msg) {
+    var el = document.getElementById('scanner-estado');
+    if (el) el.textContent = msg;
+  }
+
+  function cargarLibreriaQR() {
+    return new Promise(function (resolve, reject) {
+      if (typeof Html5Qrcode !== 'undefined') { resolve(); return; }
+      var script = document.createElement('script');
+      script.src = 'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+      script.onload = function () { resolve(); };
+      script.onerror = function () { reject(new Error('no se pudo cargar la libreria')); };
+      document.head.appendChild(script);
+    });
+  }
+
+  async function iniciarCamara() {
+    try {
+      await cargarLibreriaQR();
+      html5QrInstance = new Html5Qrcode('scanner-video');
+      await html5QrInstance.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: function (vw, vh) { return { width: Math.floor(vw * 0.9), height: Math.floor(Math.min(vh * 0.6, 160)) }; } },
+        function (decodedText) { procesarCodigoDetectado(decodedText); },
+        function () {}
+      );
+    } catch (e) {
+      setEstadoScanner('No se pudo abrir la camara: ' + e.message);
+    }
+  }
+
+  window.procesarCodigoDetectado = procesarCodigoDetectado;
+  function procesarCodigoDetectado(codigo) {
+    var ahora = Date.now();
+    if (codigo === ultimoCodigo && (ahora - ultimoTiempo) < 1500) return;
+    ultimoCodigo = codigo;
+    ultimoTiempo = ahora;
+
+    var p = (typeof productos !== 'undefined' ? productos : []).find(function (x) {
+      return codigosCoinciden(x.barcode, codigo) || codigosCoinciden(x.codigo, codigo);
+    });
+
+    if (p) {
+      agregarProductoPedido(p.id);
+      (window.reproducirBeep || function () {})('ok');
+      var qty = pedidoV2.productos[p.id];
+      setEstadoScanner('OK ' + p.nombre + ' x' + qty);
+    } else {
+      (window.reproducirBeep || function () {})('error');
+      setEstadoScanner('No encontrado: ' + codigo + ' - abriendo registro...');
+      window.cerrarScannerCamara();
+      setTimeout(function () {
+        showProductoPicker();
+        switchPickerTab('registrar');
+        var campo = document.getElementById('pr-barcode');
+        if (campo) campo.value = codigo;
+      }, 600);
+    }
+  }
+
+  function detenerCamara() {
+    if (html5QrInstance) {
+      try { html5QrInstance.stop().catch(function(){}); } catch (e) {}
+      html5QrInstance = null;
+    }
+  }
+
+  var abrirOriginal = window.abrirScannerCamara;
+  window.abrirScannerCamara = function () {
+    abrirOriginal();
+    setEstadoScanner('Apunta la camara al codigo de barras');
+    iniciarCamara();
+  };
+
+  var cerrarOriginal = window.cerrarScannerCamara;
+  window.cerrarScannerCamara = function () {
+    detenerCamara();
+    cerrarOriginal();
   };
 })();

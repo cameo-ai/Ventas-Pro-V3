@@ -1,4 +1,4 @@
-/* scanner.js v4 — Escaneo estilo Kyte con motor ZXing-C++ (WebAssembly) */
+/* scanner.js v8 (app nativa + web) — Escaneo estilo Kyte con motor ZXing-C++ (WebAssembly) */
 (function () {
   'use strict';
 
@@ -18,6 +18,48 @@
   var ultimoCodigo = null, ultimoTiempo = 0;
   var linternaOn = false, zoomOn = false;
   var escaneados = 0, cuadros = 0, mostrandoLectura = false, timerAviso = null;
+  var diag = { motor: 'cargando…', cam: '-', ms: 0, err: '', crudo: '-' };
+  var mini = null, miniCtx = null;
+  var audioCtx = null;
+
+  function prepararAudio() {
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch (e) {}
+  }
+
+  function beep(frecuencia, duracion) {
+    if (!audioCtx) return;
+    try {
+      var t = audioCtx.currentTime;
+      var o = audioCtx.createOscillator();
+      var g = audioCtx.createGain();
+      o.type = 'square';
+      o.frequency.value = frecuencia;
+      g.gain.setValueAtTime(0.3, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + duracion);
+      o.connect(g);
+      g.connect(audioCtx.destination);
+      o.start(t);
+      o.stop(t + duracion);
+    } catch (e) {}
+  }
+
+  function pintarDiag() {
+    var el = document.getElementById('scv4-diag');
+    if (!el) return;
+    el.textContent =
+      'v8 | motor: ' + diag.motor + '\n' +
+      'cámara: ' + diag.cam + '\n' +
+      'cuadros: ' + cuadros + ' | ' + diag.ms + ' ms c/u\n' +
+      'detectado: ' + diag.crudo +
+      (diag.err ? '\nERROR: ' + diag.err : '');
+  }
+  window.addEventListener('error', function (e) { diag.err = String(e.message || e).slice(0, 120); pintarDiag(); });
+  window.addEventListener('unhandledrejection', function (e) { diag.err = String((e.reason && e.reason.message) || e.reason).slice(0, 120); pintarDiag(); });
 
   function log() {
     try { console.log.apply(console, ['[scanner]'].concat([].slice.call(arguments))); } catch (e) {}
@@ -36,6 +78,8 @@
       '#scv4-aviso{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;padding:5px 12px;border-radius:14px;font:13px system-ui,sans-serif;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis}' +
       '#scv4-aviso.ok{background:rgba(39,174,96,.92)}' +
       '#scv4-aviso.err{background:rgba(231,76,60,.92);white-space:normal;text-align:center}' +
+      '#scv4-diag{position:absolute;top:44px;left:8px;max-width:62%;background:rgba(0,0,0,.6);color:#0f0;font:10px/1.3 monospace;padding:4px 6px;border-radius:4px;white-space:pre-wrap;pointer-events:none}' +
+      '#scv4-mini{position:absolute;right:8px;bottom:36px;width:96px;border:1px solid #0f0;background:#000;pointer-events:none}' +
       'body.scv4-abierto{padding-top:' + ALTO_FRANJA + '!important}';
     var s = document.createElement('style');
     s.id = 'scv4-css';
@@ -58,6 +102,8 @@
         '<button type="button" id="scv4-zoom" class="scv4-btn" style="display:none">1X</button>' +
         '<button type="button" id="scv4-linterna" class="scv4-btn" style="display:none">Linterna</button>' +
       '</div>' +
+      '<div id="scv4-diag"></div>' +
+      '<canvas id="scv4-mini"></canvas>' +
       '<div id="scv4-aviso">Iniciando cámara…</div>';
     document.body.appendChild(panel);
     document.getElementById('scv4-cerrar').addEventListener('click', cerrar);
@@ -66,6 +112,8 @@
     video = document.getElementById('scv4-video');
     canvas = document.createElement('canvas');
     ctx = canvas.getContext('2d', { willReadFrequently: true });
+    mini = document.getElementById('scv4-mini');
+    miniCtx = mini.getContext('2d');
     return panel;
   }
 
@@ -111,9 +159,11 @@
   }
 
   function obtenerWasm() {
-    return descargarWasm(WASM_LOCAL, { credentials: 'same-origin' }).catch(function (e) {
+    return descargarWasm(WASM_LOCAL, { credentials: 'same-origin' }).then(function (b) {
+      diag.motor = 'wasm local ' + Math.round(b.byteLength / 1024) + 'KB'; return b;
+    }).catch(function (e) {
       log('wasm local falló, usando CDN:', e.message);
-      return descargarWasm(WASM_CDN, {});
+      return descargarWasm(WASM_CDN, {}).then(function (b) { diag.motor = 'wasm CDN'; return b; });
     });
   }
 
@@ -134,6 +184,7 @@
         });
       }).then(function () {
         detector = new api.BarcodeDetector({ formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e'] });
+        diag.motor += ' OK';
       });
     });
   }
@@ -167,8 +218,18 @@
     if (ocupado || video.readyState < 2) { timerLoop = setTimeout(ciclo, INTERVALO_MS); return; }
     if (!capturarFranja()) { timerLoop = setTimeout(ciclo, INTERVALO_MS); return; }
     ocupado = true;
+    var t0 = Date.now();
     detector.detect(canvas).then(function (resultados) {
       cuadros++;
+      diag.ms = Date.now() - t0;
+      if (resultados && resultados.length) {
+        diag.crudo = resultados.map(function (r) { return r.format + ':' + r.rawValue; }).join(', ');
+      }
+      if (cuadros % 5 === 1 && mini) {
+        mini.width = 192; mini.height = Math.max(1, Math.round(192 * canvas.height / canvas.width));
+        miniCtx.drawImage(canvas, 0, 0, mini.width, mini.height);
+      }
+      pintarDiag();
       if (resultados && resultados.length) {
         alLeer(resultados[0].rawValue);
       } else if (!mostrandoLectura && cuadros % 6 === 0) {
@@ -176,6 +237,7 @@
       }
     }).catch(function (err) {
       log('Error del motor', err);
+      diag.err = 'motor: ' + String((err && err.message) || err).slice(0, 120); pintarDiag();
       estado('Error del motor de lectura: ' + (err && err.message ? err.message : err), 'err');
     }).then(function () {
       ocupado = false;
@@ -197,6 +259,7 @@
 
     log('Código aceptado:', codigo);
     escaneados++;
+    beep(2700, 0.12);
     flash();
     try { if (navigator.vibrate) navigator.vibrate(60); } catch (e) {}
     estado('✓ ' + codigo, 'ok');
@@ -235,6 +298,9 @@
       var caps = {};
       try { caps = track.getCapabilities ? track.getCapabilities() : {}; } catch (e) {}
       log('Capacidades de cámara:', caps);
+      diag.cam = video.videoWidth + 'x' + video.videoHeight + ' ' + (track.label || '').slice(0, 28) +
+        (caps.focusMode ? ' foco:' + caps.focusMode.join('/') : '');
+      pintarDiag();
       if (caps.torch) document.getElementById('scv4-linterna').style.display = '';
       if (caps.zoom && caps.zoom.max >= 2) document.getElementById('scv4-zoom').style.display = '';
       if (caps.focusMode && caps.focusMode.indexOf('continuous') !== -1) {
@@ -257,8 +323,95 @@
       .catch(function () { zoomOn = !zoomOn; });
   }
 
+  var nativoActivo = false, avisoNativoTimer = null;
+
+  function esApp() {
+    var C = window.Capacitor;
+    return !!(C && typeof C.isNativePlatform === 'function' && C.isNativePlatform());
+  }
+
+  function pluginNativo() {
+    var C = window.Capacitor;
+    if (!C) return null;
+    if (C.Plugins && C.Plugins.BarcodeScanner) return C.Plugins.BarcodeScanner;
+    return typeof C.registerPlugin === 'function' ? C.registerPlugin('BarcodeScanner') : null;
+  }
+
+  function avisoNativo(texto, color) {
+    var el = document.getElementById('scv8-aviso');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'scv8-aviso';
+      el.style.cssText = 'position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;' +
+        'padding:10px 18px;border-radius:12px;color:#fff;font:600 16px system-ui,sans-serif;' +
+        'max-width:90%;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.25)';
+      document.body.appendChild(el);
+    }
+    el.textContent = texto;
+    el.style.background = color || 'rgba(0,0,0,.8)';
+    el.style.display = 'block';
+    clearTimeout(avisoNativoTimer);
+    avisoNativoTimer = setTimeout(function () { el.style.display = 'none'; }, 2500);
+  }
+
+  function esperarModulo(BS, intentos) {
+    return BS.isGoogleBarcodeScannerModuleAvailable().then(function (r) {
+      if (r && r.available) return;
+      if (intentos <= 0) throw new Error('No se pudo descargar el lector de Google. Revisa internet.');
+      return new Promise(function (res) { setTimeout(res, 1000); })
+        .then(function () { return esperarModulo(BS, intentos - 1); });
+    });
+  }
+
+  function asegurarModulo(BS) {
+    return BS.isGoogleBarcodeScannerModuleAvailable().then(function (r) {
+      if (r && r.available) return;
+      avisoNativo('Preparando el lector por primera vez…');
+      return BS.installGoogleBarcodeScannerModule().then(function () { return esperarModulo(BS, 90); });
+    });
+  }
+
+  function bucleNativo(BS) {
+    if (!nativoActivo) return;
+    BS.scan({ formats: ['EAN_13', 'EAN_8', 'UPC_A', 'UPC_E'], autoZoom: true }).then(function (res) {
+      var b = res && res.barcodes && res.barcodes[0];
+      var codigo = b ? String(b.rawValue || b.displayValue || '').replace(/\D/g, '') : '';
+      if (codigo) {
+        beep(2700, 0.12);
+        try { if (navigator.vibrate) navigator.vibrate(60); } catch (e) {}
+        avisoNativo('✓ ' + codigo, 'rgba(39,174,96,.95)');
+        try {
+          if (typeof procesarCodigoDetectado === 'function') procesarCodigoDetectado(codigo);
+          else if (typeof window.procesarCodigoDetectado === 'function') window.procesarCodigoDetectado(codigo);
+          else avisoNativo('Leído ' + codigo + ' pero falta procesarCodigoDetectado()', 'rgba(231,76,60,.95)');
+        } catch (err) {
+          avisoNativo('Error con ' + codigo + ': ' + err.message + ' | ' + String(err.stack || '').split('\n').slice(1, 3).join(' ').replace(/https?:\/\/[^/]+\/js\//g, ''), 'rgba(231,76,60,.95)');
+        }
+      }
+      if (nativoActivo) setTimeout(function () { bucleNativo(BS); }, 500);
+    }).catch(function (err) {
+      nativoActivo = false;
+      var msg = (err && err.message) || String(err);
+      if (!/cancel/i.test(msg)) avisoNativo('Error del lector: ' + msg, 'rgba(231,76,60,.95)');
+    });
+  }
+
+  function abrirNativo() {
+    if (nativoActivo) return;
+    var BS = pluginNativo();
+    if (!BS) { avisoNativo('Lector nativo no disponible', 'rgba(231,76,60,.95)'); return; }
+    prepararAudio();
+    nativoActivo = true;
+    asegurarModulo(BS).then(function () { bucleNativo(BS); }).catch(function (err) {
+      nativoActivo = false;
+      avisoNativo((err && err.message) || String(err), 'rgba(231,76,60,.95)');
+    });
+  }
+
   function abrir() {
+    if (esApp()) { abrirNativo(); return; }
     if (activo || arrancando) return;
+    prepararAudio();
 
     var viejo = document.getElementById('modal-scanner-camara');
     if (viejo) viejo.style.display = 'none';
@@ -268,6 +421,8 @@
     document.body.classList.add('scv4-abierto');
     escaneados = 0; cuadros = 0; mostrandoLectura = false;
     estado('Iniciando cámara…');
+    diag.err = ''; diag.crudo = '-';
+    pintarDiag();
 
     if (!window.isSecureContext || !navigator.mediaDevices) {
       estado('La cámara requiere HTTPS: abre la app con la dirección https:// de Tailscale', 'err');
@@ -289,6 +444,7 @@
       else if (/NotReadable/i.test(msg)) msg = 'La cámara está en uso por otra app';
       else if (err && err.message) msg = err.message;
       estado('No se pudo iniciar: ' + msg, 'err');
+      diag.err = 'inicio: ' + msg; pintarDiag();
       apagarCamara();
     });
   }
@@ -301,6 +457,7 @@
   }
 
   function cerrar() {
+    nativoActivo = false;
     activo = false;
     arrancando = false;
     linternaOn = false; zoomOn = false;
@@ -329,6 +486,7 @@
     if (!esBoton(e)) return;
     e.preventDefault();
     e.stopImmediatePropagation();
+    if (esApp()) { abrirNativo(); return; }
     if (activo || arrancando) cerrar(); else abrir();
   }, true);
 
@@ -336,5 +494,5 @@
     if (document.hidden && (activo || arrancando)) cerrar();
   });
 
-  log('scanner.js v5 cargado');
+  log('scanner.js v8 cargado' + (esApp() ? ' (app nativa)' : ' (navegador)'));
 })();
