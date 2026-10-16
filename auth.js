@@ -11,10 +11,11 @@ module.exports = function setupAuth(app, db) {
     admin = db.prepare("SELECT * FROM usuarios WHERE email = 'admin'").get();
   }
   app.use(function(req, res, next) {
-    if (req.path === '/api/login') return next();
+    var esPublico = req.path === '/api/login' || req.path === '/login.html' || /\.(css|js|png|jpe?g|gif|webp|svg|ico|woff2?|wasm)$/.test(req.path);
+    if (esPublico) return next();
     if (!req.session.usuario) {
       if (req.path.startsWith('/api/')) return res.status(401).json({ error: 'No autenticado' });
-      return next();
+      return res.redirect('/login.html');
     }
     next();
   });
