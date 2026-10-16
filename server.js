@@ -85,6 +85,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use('/api', function(req, res, next) { res.set('Cache-Control', 'no-store'); next(); });
 app.use(session({ secret: process.env.SESSION_SECRET || 'proventasmagic2024', resave: false, saveUninitialized: true }));
 setupAuth(app, db);
 
