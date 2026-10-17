@@ -36,10 +36,10 @@
     b.style.color = '#fff';
     b.style.border = 'none';
     b.style.borderRadius = '30px';
-    b.style.width = '260px';
+    b.style.width = '230px';
     b.style.maxWidth = '80%';
-    b.style.padding = '16px 20px';
-    b.style.fontSize = '20px';
+    b.style.padding = '12px 16px';
+    b.style.fontSize = '17px';
     b.style.fontWeight = '700';
     b.style.letterSpacing = '.5px';
     b.style.boxShadow = '0 4px 14px rgba(0,0,0,.3)';
@@ -58,11 +58,11 @@
       b.textContent = 'INGRESO PRODUCTOS';
       estiloBoton(b);
       b.style.display = 'block';
-      b.style.margin = '18px auto 0';
+      b.style.margin = '12px auto 0';
       b.addEventListener('click', abrirLista);
       slot.appendChild(b);
       v.style.display = 'block';
-      v.style.margin = '0 auto';
+      v.style.margin = '0 auto'; slot.style.marginTop = '22vh';
     }
     return true;
   }
