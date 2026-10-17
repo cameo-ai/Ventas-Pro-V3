@@ -244,7 +244,7 @@
       '<div class="ip-pie"><button type="button" class="ip-guardar" id="ip-guardar" disabled>Añadir producto</button></div>';
     document.body.appendChild(el);
 
-    document.getElementById('ip-f-volver').addEventListener('click', function () { abrirLista(); });
+    document.getElementById('ip-f-volver').addEventListener('click', function () { if (modoVenta) volverAVenta(null); else abrirLista(); });
     document.getElementById('ip-opc-tit').addEventListener('click', function () { document.getElementById('ip-opc').classList.toggle('abierto'); });
     ['ip-nombre', 'ip-precio'].forEach(function (id) { document.getElementById(id).addEventListener('input', pintarPrev); });
     document.getElementById('ip-foto-btn').addEventListener('click', function () { document.getElementById('ip-foto-file').click(); });
@@ -280,7 +280,8 @@
     document.getElementById('ip-guardar').disabled = !nom || pre === '';
   }
 
-  function abrirForm(p, codigoNuevo) {
+  function abrirForm(p, codigoNuevo, desdeVenta) {
+    modoVenta = !!desdeVenta;
     construirForm();
     editando = p || null;
     fotoArchivo = null;
@@ -372,10 +373,11 @@
       return Promise.resolve(api('POST', '/productos', datos)).then(function (p) {
         if (!p || !p.id) throw new Error((p && p.error) || 'respuesta inválida');
         lista().push(p);
+        nuevoId = p.id;
         aviso('Producto guardado', 'success');
       });
     }).then(function () {
-      abrirLista();
+      if (modoVenta) volverAVenta(nuevoId); else abrirLista();
     }).catch(function (e) {
       aviso('No se pudo guardar: ' + ((e && e.message) || e), 'error');
     }).then(function () {
@@ -402,6 +404,31 @@
       }
     }).catch(falloScan);
   }, true);
+
+  var modoVenta = false, nuevoId = null;
+
+  function volverAVenta(id) {
+    modoVenta = false;
+    mostrar(null);
+    if (id) {
+      try { if (typeof agregarProductoPedido === 'function') agregarProductoPedido(id); } catch (e) {}
+      try { if (typeof renderProductosAgregados === 'function') renderProductosAgregados(); } catch (e) {}
+      try { if (typeof recalcularTotal === 'function') recalcularTotal(); } catch (e) {}
+    }
+    setTimeout(function () { if (window.KyteScanner) window.KyteScanner.abrir(); }, 250);
+  }
+
+  if (ES_APP && typeof window.procesarCodigoDetectado === 'function') {
+    var procesarOriginal = window.procesarCodigoDetectado;
+    window.procesarCodigoDetectado = function (codigo) {
+      var existe = lista().some(function (x) { return mismoCodigo(x.barcode, codigo) || mismoCodigo(x.codigo, codigo); });
+      if (existe) return procesarOriginal.apply(this, arguments);
+      try { if (window.KyteScanner) window.KyteScanner.cerrar(false); } catch (e) {}
+      nuevoId = null;
+      abrirForm(null, String(codigo || ''), true);
+      aviso('Código nuevo: regístralo para agregarlo a la venta');
+    };
+  }
 
   window.IngresoProductos = { abrir: abrirLista, nuevo: function (cod) { abrirForm(null, cod || ''); } };
 })();
